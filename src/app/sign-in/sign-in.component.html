@@ -1,0 +1,22 @@
+<div class="h-screen flex justify-center items-center bg-black">
+  <div class="flex flex-col gap-4">
+    <h1 class="text-white font-bold text-3xl">Login to your account</h1>
+    <input
+      class="rounded-3xl bg-black border-2 border-white p-1 px-4 text-white"
+      placeholder="username"
+      [(ngModel)]="username"
+    />
+    <input
+      class="rounded-3xl bg-black border-2 border-white p-1 px-4 text-white"
+      placeholder="password"
+      type="password"
+      [(ngModel)]="password"
+    />
+    <button
+      (click)="Login()"
+      class="rounded-3xl p-2 px-5 text-white text-xs bg-blue-700"
+    >
+      Sign in
+    </button>
+  </div>
+</div>
