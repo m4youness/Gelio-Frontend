@@ -1,12 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/user.service';
+import { Emitters } from '../emitters/emitter';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css'], // <-- Corrected property name
+  styleUrls: ['./home.component.css'],
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
   constructor(private user_service: UserService) {}
 
   IsLoggedIn() {
@@ -17,16 +18,21 @@ export class HomeComponent {
         }
       },
       (err) => {
-        console.log(err); // <-- Corrected syntax
+        console.log(err);
       },
     );
+  }
+  ngOnInit(): void {
+    Emitters.authEmitter.subscribe((auth) => {
+      alert(auth);
+    });
   }
 
   Logout() {
     this.user_service.Logout().subscribe(
       (data) => {
         if (data) {
-          alert('Logged out');
+          Emitters.authEmitter.emit(false);
         }
       },
       (err) => {

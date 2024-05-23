@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { Router } from '@angular/router';
+import { Emitters } from '../emitters/emitter';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-sign-in',
@@ -11,19 +13,35 @@ export class SignInComponent {
   constructor(
     private user_service: UserService,
     private router: Router,
-  ) {}
-  username: string = '';
-  password: string = '';
+  ) {
+    this.SignInForm = new FormGroup({
+      username: new FormControl('', [Validators.required]),
+      password: new FormControl('', [Validators.required]),
+    });
+  }
+
+  SignInForm: FormGroup;
+
+  username?: string | null;
+  password?: string | null;
 
   Login() {
-    this.user_service
-      .Login({ UserName: this.username, Password: this.password })
-      .subscribe((data) => {
-        if (data) {
-          this.router.navigate(['/home']);
-        } else {
-          alert('wrong username or password');
-        }
-      });
+    if (this.SignInForm.valid) {
+      this.user_service
+        .Login({ UserName: this.username, Password: this.password })
+        .subscribe(
+          (data: boolean) => {
+            if (data) {
+              this.router.navigate(['/home']);
+              Emitters.authEmitter.emit(true);
+            } else {
+              this.SignInForm.markAllAsTouched();
+            }
+          },
+          (err) => {
+            console.log(err);
+          },
+        );
+    } else this.SignInForm.markAllAsTouched();
   }
 }

@@ -1,0 +1,57 @@
+<div class="h-screen flex justify-center items-center bg-black">
+  <div class="flex flex-col gap-4 w-1/6">
+    <h1 class="text-white font-bold text-2xl pb-3 text-center">
+      Create your account
+    </h1>
+    <input
+      class="rounded-3xl bg-black border-2 border-white p-1 px-4 text-white"
+      placeholder="Firstname"
+      [(ngModel)]="person.FirstName"
+    />
+    <input
+      class="rounded-3xl bg-black border-2 border-white p-1 px-4 text-white"
+      placeholder="Lastname"
+      [(ngModel)]="person.LastName"
+    />
+    <input
+      class="rounded-3xl bg-black border-2 border-white p-1 px-4 text-white"
+      placeholder="Phonenumber"
+      [(ngModel)]="person.PhoneNumber"
+    />
+    <input
+      class="rounded-3xl bg-black border-2 border-white p-1 px-4 text-white"
+      placeholder="Email"
+      [(ngModel)]="person.Email"
+    />
+    <input
+      class="rounded-3xl bg-black border-2 border-white p-1 px-4 text-white"
+      placeholder="Date of birth"
+      [(ngModel)]="person.DateOfBirth"
+    />
+    <input
+      class="rounded-3xl bg-black border-2 border-white p-1 px-4 text-white"
+      placeholder="Username"
+      [(ngModel)]="user.Username"
+    />
+    <input
+      class="rounded-3xl bg-black border-2 border-white p-1 px-4 text-white"
+      placeholder="Password"
+      type="password"
+      [(ngModel)]="user.Password"
+    />
+
+    <button
+      (click)="SignUp()"
+      class="rounded-3xl p-2 px-5 text-white text-xs bg-blue-700 hover:bg-blue-600"
+    >
+      Sign up
+    </button>
+    <div class="text-gray-400 pt-2 flex gap-2">
+      <span>Already have an account?</span>
+      <a class="text-blue-500 hover:text-blue-700 cursor-pointer" routerLink="/"
+        >Login here</a
+      >
+    </div>
+  </div>
+  <
+</div>
