@@ -13,9 +13,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HomeComponent } from './home/home.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
 import { RouterModule } from '@angular/router';
+import { NavbarComponent } from './navbar/navbar.component';
+import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
+import { ProfileComponent } from './profile/profile.component';
 
 @NgModule({
-  declarations: [AppComponent, SignInComponent, HomeComponent, SignUpComponent],
+  declarations: [AppComponent, SignInComponent, HomeComponent, SignUpComponent, NavbarComponent, UnauthorizedComponent, ProfileComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

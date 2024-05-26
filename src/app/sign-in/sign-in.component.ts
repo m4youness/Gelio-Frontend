@@ -1,7 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { Router } from '@angular/router';
-import { Emitters } from '../emitters/emitter';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
@@ -24,7 +23,6 @@ export class SignInComponent {
 
   username?: string | null;
   password?: string | null;
-
   Login() {
     if (this.SignInForm.valid) {
       this.user_service
@@ -33,7 +31,6 @@ export class SignInComponent {
           (data: boolean) => {
             if (data) {
               this.router.navigate(['/home']);
-              Emitters.authEmitter.emit(true);
             } else {
               this.SignInForm.markAllAsTouched();
             }

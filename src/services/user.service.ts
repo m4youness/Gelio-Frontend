@@ -35,6 +35,24 @@ export class UserService {
   }
 
   AddUser(User: User): Observable<number> {
-    return this.http.post<number>(this.ApiUrl + 'User', User);
+    return this.http.post<number>(this.ApiUrl + 'User', User, {
+      withCredentials: true,
+    });
+  }
+
+  CurrentUserId(): Observable<number> {
+    return this.http.get<number>(this.ApiUrl + 'UserId', {
+      withCredentials: true,
+    });
+  }
+
+  GetUser(id?: number | null): Observable<User> {
+    return this.http.get<User>(this.ApiUrl + `User/${id}`, {
+      withCredentials: true,
+    });
+  }
+
+  DoesUserExist(Login: LoginClass): Observable<boolean> {
+    return this.http.post<boolean>(this.ApiUrl + 'User/Exists', Login);
   }
 }

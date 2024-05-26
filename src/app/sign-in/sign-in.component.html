@@ -1,11 +1,10 @@
 <form [formGroup]="SignInForm" (submit)="Login()">
   <div class="h-screen flex justify-center items-center bg-black">
-    <div class="flex flex-col gap-4 w-1/6">
+    <div class="flex flex-col gap-4 w-72">
       <h1 class="text-white font-bold text-2xl pb-3 text-center">
         Sign in to your account
       </h1>
       <input
-        class="rounded-3xl bg-black border-2 border-white p-1 px-4 text-white"
         placeholder="Username"
         [(ngModel)]="username"
         formControlName="username"
@@ -14,6 +13,7 @@
             SignInForm.get('username')?.invalid &&
             SignInForm.get('username')?.touched
         }"
+        class="rounded-3xl bg-black border-2 border-white p-1 px-4 text-white"
       />
 
       <input

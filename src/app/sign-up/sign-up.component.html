@@ -1,57 +1,101 @@
-<div class="h-screen flex justify-center items-center bg-black">
-  <div class="flex flex-col gap-4 w-1/6">
-    <h1 class="text-white font-bold text-2xl pb-3 text-center">
-      Create your account
-    </h1>
-    <input
-      class="rounded-3xl bg-black border-2 border-white p-1 px-4 text-white"
-      placeholder="Firstname"
-      [(ngModel)]="person.FirstName"
-    />
-    <input
-      class="rounded-3xl bg-black border-2 border-white p-1 px-4 text-white"
-      placeholder="Lastname"
-      [(ngModel)]="person.LastName"
-    />
-    <input
-      class="rounded-3xl bg-black border-2 border-white p-1 px-4 text-white"
-      placeholder="Phonenumber"
-      [(ngModel)]="person.PhoneNumber"
-    />
-    <input
-      class="rounded-3xl bg-black border-2 border-white p-1 px-4 text-white"
-      placeholder="Email"
-      [(ngModel)]="person.Email"
-    />
-    <input
-      class="rounded-3xl bg-black border-2 border-white p-1 px-4 text-white"
-      placeholder="Date of birth"
-      [(ngModel)]="person.DateOfBirth"
-    />
-    <input
-      class="rounded-3xl bg-black border-2 border-white p-1 px-4 text-white"
-      placeholder="Username"
-      [(ngModel)]="user.Username"
-    />
-    <input
-      class="rounded-3xl bg-black border-2 border-white p-1 px-4 text-white"
-      placeholder="Password"
-      type="password"
-      [(ngModel)]="user.Password"
-    />
+<form [formGroup]="SignUpForm" (submit)="SignUp()">
+  <div class="h-screen flex justify-center items-center bg-black">
+    <div class="flex flex-col gap-4 w-72">
+      <h1 class="text-white font-bold text-2xl pb-3 text-center">
+        Create your account
+      </h1>
+      <input
+        class="rounded-3xl bg-black border-2 border-white p-1 px-4 text-white"
+        placeholder="Firstname"
+        [(ngModel)]="person.FirstName"
+        formControlName="firstname"
+        [ngClass]="{
+          'border-1 border-rose-500':
+            SignUpForm.get('firstname')?.invalid &&
+            SignUpForm.get('firstname')?.touched
+        }"
+      />
+      <input
+        class="rounded-3xl bg-black border-2 border-white p-1 px-4 text-white"
+        placeholder="Lastname"
+        [(ngModel)]="person.LastName"
+        formControlName="lastname"
+        [ngClass]="{
+          'border-1 border-rose-500':
+            SignUpForm.get('lastname')?.invalid &&
+            SignUpForm.get('lastname')?.touched
+        }"
+      />
+      <input
+        class="rounded-3xl bg-black border-2 border-white p-1 px-4 text-white"
+        placeholder="Phonenumber"
+        [(ngModel)]="person.PhoneNumber"
+        formControlName="phonenumber"
+        [ngClass]="{
+          'border-1 border-rose-500':
+            SignUpForm.get('phonenumber')?.invalid &&
+            SignUpForm.get('phonenumber')?.touched
+        }"
+      />
 
-    <button
-      (click)="SignUp()"
-      class="rounded-3xl p-2 px-5 text-white text-xs bg-blue-700 hover:bg-blue-600"
-    >
-      Sign up
-    </button>
-    <div class="text-gray-400 pt-2 flex gap-2">
-      <span>Already have an account?</span>
-      <a class="text-blue-500 hover:text-blue-700 cursor-pointer" routerLink="/"
-        >Login here</a
+      <input
+        class="rounded-3xl bg-black border-2 border-white p-1 px-4 text-white"
+        placeholder="Email"
+        [(ngModel)]="person.Email"
+        formControlName="email"
+        [ngClass]="{
+          'border-1 border-rose-500':
+            SignUpForm.get('email')?.invalid && SignUpForm.get('email')?.touched
+        }"
+      />
+      <input
+        class="rounded-3xl bg-black border-2 border-white p-1 px-4 text-white"
+        placeholder="Date of birth"
+        [(ngModel)]="person.DateOfBirth"
+        formControlName="dateofbirth"
+        [ngClass]="{
+          'border-1 border-rose-500':
+            SignUpForm.get('dateofbirth')?.invalid &&
+            SignUpForm.get('dateofbirth')?.touched
+        }"
+      />
+      <input
+        class="rounded-3xl bg-black border-2 border-white p-1 px-4 text-white"
+        placeholder="Username"
+        [(ngModel)]="user.Username"
+        formControlName="username"
+        [ngClass]="{
+          'border-1 border-rose-500':
+            SignUpForm.get('username')?.invalid &&
+            SignUpForm.get('username')?.touched
+        }"
+      />
+      <input
+        class="rounded-3xl bg-black border-2 border-white p-1 px-4 text-white"
+        placeholder="Password"
+        type="password"
+        [(ngModel)]="user.Password"
+        formControlName="password"
+        [ngClass]="{
+          'border-1 border-rose-500':
+            SignUpForm.get('password')?.invalid &&
+            SignUpForm.get('password')?.touched
+        }"
+      />
+
+      <button
+        class="rounded-3xl p-2 px-5 text-white text-xs bg-blue-700 hover:bg-blue-600"
       >
+        Sign up
+      </button>
+      <div class="text-gray-400 pt-2 flex gap-2">
+        <span>Already have an account?</span>
+        <a
+          class="text-blue-500 hover:text-blue-700 cursor-pointer"
+          routerLink="/"
+          >Login here</a
+        >
+      </div>
     </div>
   </div>
-  <
-</div>
+</form>
