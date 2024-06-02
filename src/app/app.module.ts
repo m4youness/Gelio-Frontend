@@ -16,9 +16,10 @@ import { RouterModule } from '@angular/router';
 import { NavbarComponent } from './navbar/navbar.component';
 import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 import { ProfileComponent } from './profile/profile.component';
+import { MessagesComponent } from './messages/messages.component';
 
 @NgModule({
-  declarations: [AppComponent, SignInComponent, HomeComponent, SignUpComponent, NavbarComponent, UnauthorizedComponent, ProfileComponent],
+  declarations: [AppComponent, SignInComponent, HomeComponent, SignUpComponent, NavbarComponent, UnauthorizedComponent, ProfileComponent, MessagesComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

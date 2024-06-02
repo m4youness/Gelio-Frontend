@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { User } from '../../models/user';
 import { Router } from '@angular/router';
@@ -9,6 +9,8 @@ import { Router } from '@angular/router';
   styleUrl: './navbar.component.css',
 })
 export class NavbarComponent implements OnInit {
+  @Input() PageName?: string | null;
+
   constructor(
     private user_service: UserService,
     private router: Router,
@@ -23,9 +25,18 @@ export class NavbarComponent implements OnInit {
   GetCurrentUser() {
     this.user_service.CurrentUserId().subscribe(
       (data) => {
-        this.user_service.GetUser(data).subscribe((data) => {
-          this.CurrentUser = data;
-        });
+        this.user_service.GetUser(data).subscribe(
+          (data) => {
+            if (data == null) {
+              this.router.navigate(['/error']);
+              return;
+            }
+            this.CurrentUser = data;
+          },
+          (err) => {
+            console.log(err);
+          },
+        );
       },
       (err) => {
         console.log(err);

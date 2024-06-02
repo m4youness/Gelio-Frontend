@@ -1,13 +1,44 @@
-<app-navbar />
-<div class="flex justify-center items-center bg-black h-screen">
-  <div class="border-gray-800 border rounded-xl bg-black p-2 text-white w-1/4">
-    <div class="flex flex-col gap-2 px-10 py-3 border-b border-gray-800">
+<app-navbar [PageName]="pageName" />
+<div class="flex justify-center items-center bg-black h-[93vh]">
+  <div
+    class="border-gray-800 border rounded-xl bg-black p-2 text-white min-w-max"
+  >
+    <div class="flex flex-col px-10 py-3 border-b border-gray-800">
       <p class="font-bold text-white">User Profile</p>
+      <p class="text-gray-400">This is some information about the user</p>
     </div>
-    <div>
-      {{ CurrentUser.Username }}
+    <div class="px-10 flex py-3 border-b border-gray-800">
+      <p class="text-white font-bold w-28">Username</p>
+      <p class="text-gray-400">{{ CurrentUser.Username }}</p>
     </div>
-    <div></div>
-    <div></div>
+    <div class="px-10 flex py-3 border-b border-gray-800">
+      <p class="text-white font-bold w-28">Full name</p>
+      <p class="text-gray-400">
+        {{ CurrentPerson.FirstName + " " + CurrentPerson.LastName }}
+      </p>
+    </div>
+    <div class="px-10 flex py-3 border-b border-gray-800">
+      <p class="text-white font-bold w-28">Email</p>
+      <p class="text-gray-400">{{ CurrentPerson.Email }}</p>
+    </div>
+    <div class="px-10 flex py-3 border-b border-gray-800">
+      <p class="text-white font-bold w-28">Phone</p>
+      <p class="text-gray-400">{{ CurrentPerson.PhoneNumber }}</p>
+    </div>
+    <div class="px-10 flex py-3 border-b border-gray-800">
+      <p class="text-white font-bold w-28">Age</p>
+      <p class="text-gray-400">{{ this.Age }}</p>
+    </div>
+    <div class="px-10 flex py-3 border-b border-gray-800">
+      <p class="text-white font-bold w-28">Country</p>
+      <p class="text-gray-400">{{ this.Country }}</p>
+    </div>
+    <div class="px-10 flex py-3">
+      <p class="text-white font-bold w-28">Gender</p>
+      <p *ngIf="this.CurrentPerson.GenderID == 0" class="text-gray-400">Male</p>
+      <p *ngIf="this.CurrentPerson.GenderID == 1" class="text-gray-400">
+        Female
+      </p>
+    </div>
   </div>
 </div>

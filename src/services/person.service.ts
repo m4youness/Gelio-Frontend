@@ -14,4 +14,8 @@ export class PersonService {
   AddPerson(Person: Person): Observable<number> {
     return this.http.post<number>(this.ApiUrl + 'Person', Person);
   }
+
+  GetPerson(PersonId?: number | null): Observable<Person> {
+    return this.http.get<Person>(this.ApiUrl + `Person/${PersonId}`);
+  }
 }

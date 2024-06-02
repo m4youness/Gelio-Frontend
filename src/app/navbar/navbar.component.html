@@ -1,7 +1,12 @@
 <div
   class="w-screen bg-black flex items-center justify-between text-white py-5 border-b border-gray-800"
 >
-  <div class="flex"></div>
+  <div *ngIf="PageName == 'messages'" class="flex">
+    <a routerLink="/home" class="hover:underline px-5">Home</a>
+  </div>
+  <div *ngIf="PageName == 'home'" class="flex">
+    <a routerLink="/messages" class="hover:underline px-5">Messages</a>
+  </div>
   <div class="flex gap-4 text-white mr-5">
     <div class="flex gap-2">
       <svg

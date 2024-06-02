@@ -4,6 +4,6 @@ export class User {
   Password?: string | null;
   CreatedDate?: string | null;
   IsActive?: boolean | null;
-  ProfileImage?: string | null;
+  ProfileImageId?: number | null;
   PersonID?: number | null;
 }
