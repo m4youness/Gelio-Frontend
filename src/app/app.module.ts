@@ -19,7 +19,16 @@ import { ProfileComponent } from './profile/profile.component';
 import { MessagesComponent } from './messages/messages.component';
 
 @NgModule({
-  declarations: [AppComponent, SignInComponent, HomeComponent, SignUpComponent, NavbarComponent, UnauthorizedComponent, ProfileComponent, MessagesComponent],
+  declarations: [
+    AppComponent,
+    SignInComponent,
+    HomeComponent,
+    SignUpComponent,
+    NavbarComponent,
+    UnauthorizedComponent,
+    ProfileComponent,
+    MessagesComponent,
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
