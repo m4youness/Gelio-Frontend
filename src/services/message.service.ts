@@ -46,4 +46,14 @@ export class MessageService {
       SentDate: sentDate,
     });
   }
+
+  AddContact(
+    username?: string | null,
+    userId?: number | null,
+  ): Observable<boolean> {
+    return this.http.post<boolean>(this.ApiUrl + 'Contact', {
+      Username: username,
+      UserId: userId,
+    });
+  }
 }

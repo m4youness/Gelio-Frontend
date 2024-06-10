@@ -3,14 +3,29 @@
 <div class="h-[93vh] bg-black flex">
   <div
     class="md:w-2/5 md:min-w-80 md:border-r h-full w-full md:border-gray-800"
+    [ngClass]="{ 'hidden lg:block': MessageModeOn }"
   >
+    <div class="border-b border-gray-800 flex items-center p-6">
+      <button class="text-white hover:underline" (click)="ContactModeOn()">
+        Add Contact
+      </button>
+    </div>
     <div
       class="border-b font-bold border-gray-800 p-8 text-white hover:bg-stone-950 cursor-pointer"
       *ngFor="let user of Users"
       (click)="LoadMessage(user.UserID)"
+      [ngClass]="{ 'hidden ': ContactMode }"
     >
       {{ user.Username || "loading..." }}
     </div>
+
+    <form *ngIf="ContactMode" [formGroup]="ContactForm" (submit)="AddContact()">
+      <input
+        placeholder="Username"
+        class="rounded-xl text-white m-4 p-2 px-3 bg-zinc-900 focus:outline-none w-11/12"
+        formControlName="Contact"
+      />
+    </form>
   </div>
   <div
     class="md:flex md:justify-center md:items-center md:w-full h-2/3 hidden flex-col gap-3"
@@ -23,12 +38,12 @@
   </div>
 
   <div
-    class="md:flex md:w-full h-full bg-black md:justify-end hidden flex-col gap-3"
+    class="flex w-full h-full bg-black justify-end flex-col gap-3"
     *ngIf="MessageModeOn"
   >
-    <div class="overflow-y-scroll w-full flex flex-col">
+    <div class="overflow-y-scroll w-full flex flex-col" #messageContainer>
       <div
-        class="text-white p-2 rounded-3xl px-5 xl:mx-36 md:mx-7 my-4 max-w-[320px] w-fit"
+        class="text-white p-2 rounded-3xl px-5 mx-12 my-3 max-w-[320px] w-fit"
         *ngFor="let msg of Messages"
         [ngClass]="getMessageClass(msg.SenderId)"
       >
@@ -41,7 +56,7 @@
       <div class="h-[72px] bg-zinc-950 w-full flex justify-center items-center">
         <div class="px-10 flex gap-3">
           <input
-            class="text-white bg-zinc-900 focus:outline-none min-w-[45vw] p-2 px-7 rounded-2xl"
+            class="text-white bg-zinc-900 focus:outline-none min-w-[55vw] p-2 px-7 rounded-2xl"
             placeholder="Type a message"
             formControlName="Message"
           />
