@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { CountryService } from '../../services/country.service';
 import { Country } from '../../models/country';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-sign-up',
@@ -52,77 +53,73 @@ export class SignUpComponent implements OnInit {
     this.person.GenderID = 1;
   }
 
-  ngOnInit(): void {
-    this.country_service.GetCountries().subscribe(
-      (data) => {
-        this.Countries = data;
-      },
-      (err) => {
-        console.log(err);
-      },
-    );
-  }
-
-  async SignUp() {
+  async ngOnInit() {
     try {
-      if (this.SignUpForm.valid) {
-        this.person.CountryID = await this.country_service
-          .GetCountryWithName(this.SignUpForm.controls['CountryName'].value)
-          .toPromise();
-        this.user_service
-          .DoesUserExist({
-            UserName: this.user.Username,
-          })
-          .subscribe((data) => {
-            if (!data) {
-              this.person_service.AddPerson(this.person).subscribe(
-                (data) => {
-                  this.AddUser(data);
-                },
-                (err) => {
-                  console.log(err);
-                },
-              );
-            } else {
-              alert('This user already exists');
-            }
-          });
-      } else {
-        this.SignUpForm.markAllAsTouched();
-      }
+      const Countries: Country[] = await firstValueFrom(
+        this.country_service.GetCountries(),
+      );
+
+      if (Countries) this.Countries = Countries;
     } catch (err) {
       console.log(err);
     }
   }
 
-  AddUser(PersonId: number) {
+  async SignUp() {
+    try {
+      if (!this.SignUpForm.valid) {
+        this.SignUpForm.markAllAsTouched();
+        return;
+      }
+
+      this.person.CountryID = await firstValueFrom(
+        this.country_service.GetCountryWithName(
+          this.SignUpForm.controls['CountryName'].value,
+        ),
+      );
+
+      const UserExists = await firstValueFrom(
+        this.user_service.DoesUserExist({
+          UserName: this.user.Username,
+        }),
+      );
+
+      if (UserExists) {
+        alert('This user already exists');
+        return;
+      }
+
+      const PersonId = await firstValueFrom(
+        this.person_service.AddPerson(this.person),
+      );
+      this.AddUser(PersonId);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async AddUser(PersonId?: number | null) {
     this.user.PersonID = PersonId;
-    this.user_service.AddUser(this.user).subscribe(
-      (data) => {
-        if (data == null) {
-          alert('An error occurred');
-        } else {
-          this.user_service
-            .Login({
-              UserName: this.user.Username,
-              Password: this.user.Password,
-            })
-            .subscribe(
-              (data) => {
-                if (data) {
-                  this.router.navigate(['/home']);
-                }
-              },
-              (err) => {
-                console.log(err);
-              },
-            );
-        }
-      },
-      (err) => {
-        console.log(err);
-      },
-    );
+    try {
+      const UserId = await firstValueFrom(this.user_service.AddUser(this.user));
+      if (!UserId) {
+        alert('An error occurred');
+        return;
+      }
+
+      const LoggedIn = await firstValueFrom(
+        this.user_service.Login({
+          UserName: this.user.Username,
+          Password: this.user.Password,
+        }),
+      );
+
+      if (LoggedIn) {
+        this.router.navigate(['/home']);
+      }
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   onFileSelected(event: Event): void {

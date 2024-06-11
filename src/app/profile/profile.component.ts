@@ -4,6 +4,8 @@ import { User } from '../../models/user';
 import { PersonService } from '../../services/person.service';
 import { Person } from '../../models/people';
 import { CountryService } from '../../services/country.service';
+import { firstValueFrom } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
@@ -15,6 +17,7 @@ export class ProfileComponent implements OnInit {
     private user_service: UserService,
     private person_service: PersonService,
     private country_service: CountryService,
+    private route: ActivatedRoute,
   ) {}
 
   pageName: string = 'home';
@@ -24,6 +27,7 @@ export class ProfileComponent implements OnInit {
   Country?: string | null;
   Age?: number | null;
   Gender?: string | null;
+  UserId?: number | null;
 
   ngOnInit(): void {
     this.getCurrentUser();
@@ -31,12 +35,14 @@ export class ProfileComponent implements OnInit {
 
   async getCurrentUser() {
     try {
-      const userId = await this.user_service.CurrentUserId().toPromise();
-      const User = await this.user_service.GetUser(userId).toPromise();
-      if (User != null) {
-        this.CurrentUser = User;
-      }
+      const params = await firstValueFrom(this.route.paramMap);
+      const id = +params.get('id')!;
 
+      const User = await firstValueFrom(this.user_service.GetUser(id));
+
+      if (!User) return;
+
+      this.CurrentUser = User;
       this.getCurrentPerson();
     } catch (err) {
       console.log(err);
@@ -45,18 +51,19 @@ export class ProfileComponent implements OnInit {
 
   async getCurrentPerson() {
     try {
-      const Person = await this.person_service
-        .GetPerson(this.CurrentUser.PersonID)
-        .toPromise();
+      const Person = await firstValueFrom(
+        this.person_service.GetPerson(this.CurrentUser.PersonID),
+      );
 
-      if (Person != null) {
-        this.CurrentPerson = Person;
-      }
+      if (!Person) return;
+
+      this.CurrentPerson = Person;
 
       if (!this.CurrentPerson.CountryID) return;
-      this.Country = await this.country_service
-        .GetCountryWithId(this.CurrentPerson.CountryID)
-        .toPromise();
+
+      this.Country = await firstValueFrom(
+        this.country_service.GetCountryWithId(this.CurrentPerson.CountryID),
+      );
 
       if (this.CurrentPerson.DateOfBirth) {
         this.Age = this.CalculateAge(this.CurrentPerson.DateOfBirth);

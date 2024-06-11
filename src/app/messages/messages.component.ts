@@ -4,7 +4,8 @@ import { UserService } from '../../services/user.service';
 import { User } from '../../models/user';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
-
+import { firstValueFrom } from 'rxjs';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-messages',
   templateUrl: './messages.component.html',
@@ -16,6 +17,7 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
   constructor(
     private message_service: MessageService,
     private user_service: UserService,
+    private router: Router,
   ) {
     this.MessageForm = new FormGroup({
       Message: new FormControl('', [Validators.required]),
@@ -28,6 +30,8 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
 
   MessageModeOn: boolean = false;
   ContactMode: boolean = false;
+
+  receiverName: string = 'Unknown';
 
   MessageForm: FormGroup;
   ContactForm: FormGroup;
@@ -53,8 +57,11 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
 
   ContactModeOn() {
     this.ContactMode = !this.ContactMode;
-
     this.LoadMessages();
+  }
+
+  GoToReceiversProfilePage() {
+    this.router.navigate(['/profile', this.CurrentReceiverId]);
   }
 
   getMessageClass(senderId?: number | null): string {
@@ -63,30 +70,33 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
       : 'bg-zinc-900';
   }
 
+  async GetCurrentReceiverName(ReceiverId?: number | null) {
+    if (!ReceiverId) return;
+    const Receiver = await firstValueFrom(
+      this.user_service.GetUser(ReceiverId),
+    );
+    if (!Receiver.Username) return;
+    this.receiverName = Receiver.Username;
+  }
+
   async AddContact() {
     if (!this.ContactForm.valid) {
       this.ContactForm.markAllAsTouched();
       return;
     }
-    this.message_service
-      .AddContact(
+    const Added = await firstValueFrom(
+      this.message_service.AddContact(
         this.ContactForm.controls['Contact'].value,
         this.CurrentUserId,
-      )
-      .subscribe(
-        (data) => {
-          if (!data) {
-            alert('Contact was not added');
-            return;
-          }
-          this.ContactForm.controls['Contact'].setValue('');
+      ),
+    );
 
-          this.ContactModeOn();
-        },
-        (err) => {
-          console.log(err);
-        },
-      );
+    if (!Added) {
+      alert('Could not add contact');
+      return;
+    }
+    this.ContactForm.controls['Contact'].setValue('');
+    this.ContactModeOn();
   }
 
   getCurrentDateTimeString(): string {
@@ -104,39 +114,42 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
   }
 
   scrollToBottom(): void {
-    try {
-      this.messageContainer.nativeElement.scrollTop =
-        this.messageContainer.nativeElement.scrollHeight;
-    } catch (err) {
-      console.error('Error scrolling to bottom:', err);
+    if (!this.messageContainer) return;
+
+    // Debugging current scroll positions
+    const { scrollTop, scrollHeight, clientHeight } =
+      this.messageContainer.nativeElement;
+
+    // Only scroll to the bottom if not already at the bottom
+    if (scrollTop + clientHeight < scrollHeight) {
+      this.messageContainer.nativeElement.scrollTop = scrollHeight;
     }
   }
 
-  SendMessage() {
-    if (this.MessageForm.valid) {
-      this.message_service
-        .SendMessage(
+  async SendMessage() {
+    if (!this.MessageForm.valid) {
+      this.MessageForm.markAllAsTouched();
+      return;
+    }
+
+    try {
+      const Sent = await firstValueFrom(
+        this.message_service.SendMessage(
           this.CurrentUserId,
           this.CurrentReceiverId,
           this.MessageForm.controls['Message'].value,
           this.getCurrentDateTimeString(),
-        )
-        .subscribe(
-          (data) => {
-            if (!data) {
-              alert('err');
-              return;
-            } else {
-              this.MessageForm.controls['Message'].setValue('');
-              this.LoadMessage(this.CurrentReceiverId);
-            }
-          },
-          (err) => {
-            console.log(err);
-          },
-        );
-    } else {
-      this.MessageForm.markAllAsTouched();
+        ),
+      );
+      if (!Sent) {
+        alert('err');
+        return;
+      }
+
+      this.MessageForm.controls['Message'].setValue('');
+      this.LoadMessage(this.CurrentReceiverId);
+    } catch (err) {
+      console.log(err);
     }
   }
 
@@ -144,7 +157,10 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
     return new Promise((resolve, reject) => {
       this.message_service.GetMessageInfo(MessageInfoId).subscribe(
         (data) => {
-          if (data.Message) resolve(data.Message);
+          if (data.Message) {
+            console.log(data.SentDate);
+            resolve(data.Message);
+          }
         },
         (err) => {
           console.log(err);
@@ -155,46 +171,37 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
   }
 
   async LoadMessage(ReceiverId?: number | null) {
-    setTimeout(() => {
-      this.MessageModeOn = true;
-      try {
-        this.CurrentReceiverId = ReceiverId;
-        this.message_service
-          .LoadMessages(this.CurrentUserId, ReceiverId)
-          .subscribe(
-            async (data) => {
-              this.Messages = [];
-              for (const e of data) {
-                const messageBody = await this.MessageInfo(e.MessageInfoId);
-                this.Messages.push({
-                  Message: messageBody,
-                  SenderId: e.SenderId,
-                  ReceiverId: e.ReceiverId,
-                });
-              }
-            },
-            (err) => {
-              console.log(err);
-            },
-          );
-      } catch (err) {
-        console.log(err);
+    this.MessageModeOn = true;
+
+    this.GetCurrentReceiverName(ReceiverId);
+    this.CurrentReceiverId = ReceiverId;
+    try {
+      const Users = await firstValueFrom(
+        this.message_service.LoadMessages(this.CurrentUserId, ReceiverId),
+      );
+
+      this.Messages = [];
+      for (const e of Users) {
+        const messageBody = await this.MessageInfo(e.MessageInfoId);
+
+        this.Messages.push({
+          Message: messageBody,
+          SenderId: e.SenderId,
+          ReceiverId: e.ReceiverId,
+        });
       }
-    }, 25);
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   async LoadMessages() {
     try {
-      const user_id = await this.user_service.CurrentUserId().toPromise();
+      const user_id = await firstValueFrom(this.user_service.CurrentUserId());
 
       this.CurrentUserId = user_id;
-      this.message_service.LoadContacts(user_id).subscribe(
-        (data) => {
-          this.Users = data;
-        },
-        (err) => {
-          console.log(err);
-        },
+      this.Users = await firstValueFrom(
+        this.message_service.LoadContacts(user_id),
       );
     } catch (err) {
       console.log(err);

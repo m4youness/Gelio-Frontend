@@ -41,15 +41,40 @@
     class="flex w-full h-full bg-black justify-end flex-col gap-3"
     *ngIf="MessageModeOn"
   >
-    <div class="overflow-y-scroll w-full flex flex-col" #messageContainer>
+    <div class="overflow-y-scroll flex justify-between flex-col h-full">
       <div
-        class="text-white p-2 rounded-3xl px-5 mx-12 my-3 max-w-[320px] w-fit"
-        *ngFor="let msg of Messages"
-        [ngClass]="getMessageClass(msg.SenderId)"
+        class="bg-black p-6 border-b border-gray-800 w-full text-white mb-4 flex justify-between"
       >
-        <p class="break-all">
-          {{ msg.Message }}
-        </p>
+        <button (click)="ExpandMessagePanel()" class="lg:hidden">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="size-6 text-gray-300"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="m8.25 4.5 7.5 7.5-7.5 7.5"
+            />
+          </svg>
+        </button>
+        <button class="hover:underline" (click)="GoToReceiversProfilePage()">
+          {{ receiverName }}
+        </button>
+      </div>
+      <div class="overflow-y-scroll w-full flex flex-col" #messageContainer>
+        <div
+          class="text-white p-2 rounded-3xl px-5 mx-12 my-3 max-w-[320px] w-fit"
+          *ngFor="let msg of Messages"
+          [ngClass]="getMessageClass(msg.SenderId)"
+        >
+          <p class="break-all">
+            {{ msg.Message }}
+          </p>
+        </div>
       </div>
     </div>
     <form class="flex bg-blue-500" [formGroup]="MessageForm">

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-sign-in',
@@ -28,40 +29,36 @@ export class SignInComponent implements OnInit {
   username?: string | null;
   password?: string | null;
 
-  GetCurrentUser() {
-    this.user_service.CurrentUserId().subscribe(
-      (data) => {
-        this.user_service.GetUser(data).subscribe((data) => {
-          if (data != null) {
-            this.router.navigate(['/home']);
-            return;
-          }
-        });
-      },
-      (err) => {
-        console.log(err);
-      },
-    );
+  async GetCurrentUser() {
+    try {
+      const UserId = await firstValueFrom(this.user_service.CurrentUserId());
+      if (UserId) this.router.navigate(['/home']);
+    } catch (err) {
+      console.log(err);
+    }
   }
 
-  Login() {
-    if (this.SignInForm.valid) {
-      this.user_service
-        .Login({ UserName: this.username, Password: this.password })
-        .subscribe(
-          (data: boolean) => {
-            if (data) {
-              this.router.navigate(['/home']);
-            } else {
-              this.SignInForm.markAllAsTouched();
-            }
-          },
-          (err) => {
-            console.log(err);
-          },
-        );
-    } else {
+  async Login() {
+    if (!this.SignInForm.valid) {
       this.SignInForm.markAllAsTouched();
+      return;
+    }
+
+    try {
+      const LoggedIn: boolean = await firstValueFrom(
+        this.user_service.Login({
+          UserName: this.username,
+          Password: this.password,
+        }),
+      );
+
+      if (LoggedIn) {
+        this.router.navigate(['/home']);
+      } else {
+        this.SignInForm.markAllAsTouched();
+      }
+    } catch (err) {
+      console.log(err);
     }
   }
 }
