@@ -1,2 +1,7 @@
 <app-navbar [PageName]="pageName" />
-<div class="h-[93vh] bg-black"></div>
+
+<div
+  class="h-screen flex flex-col items-center gap-4 overflow-y-scroll bg-black"
+>
+  <div *ngFor="let number of Numbers"></div>
+</div>

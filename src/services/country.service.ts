@@ -23,6 +23,8 @@ export class CountryService {
   }
 
   GetCountryWithId(countryId: number): Observable<string> {
-    return this.http.get<string>(this.ApiUrl + `Country/${countryId}`);
+    return this.http.get<string>(this.ApiUrl + `Country/${countryId}`, {
+      withCredentials: true,
+    });
   }
 }

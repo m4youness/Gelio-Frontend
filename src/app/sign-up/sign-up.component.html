@@ -1,7 +1,7 @@
 <form
   [formGroup]="SignUpForm"
   (submit)="SignUp()"
-  class="h-screen flex justify-center items-center bg-black"
+  class="h-screen flex justify-center items-center bg-black overflow-scroll"
 >
   <div class="flex flex-col gap-4 w-72">
     <h1 class="text-white font-bold text-2xl pb-3 text-center">
@@ -54,7 +54,7 @@
     />
     <input
       class="rounded-3xl bg-black border-2 border-white p-1 px-4 text-white"
-      placeholder="Date of birth"
+      placeholder="yyyy/mm/dd"
       [(ngModel)]="person.DateOfBirth"
       formControlName="dateofbirth"
       [ngClass]="{
@@ -86,54 +86,35 @@
           SignUpForm.get('password')?.touched
       }"
     />
-
-    <select
-      class="rounded-3xl py-2 px-3 border-2 border-white bg-black text-white"
-      formControlName="CountryName"
-    >
-      <option value="" disabled selected>Select a country</option>
-      <option *ngFor="let Country of Countries" [value]="Country.CountryName">
-        {{ Country.CountryName }}
-      </option>
-    </select>
-
-    <div class="ml-3 flex gap-8 text-white items-center">
-      <div class="flex justify-center items-center">
-        <input
-          type="file"
-          id="profilePictureInput"
-          class="hidden"
-          (change)="onFileSelected($event)"
+    <div class="relative">
+      <select
+        class="rounded-3xl p-1 px-4 border-2 border-white bg-black text-gray-400 appearance-none w-72"
+        formControlName="CountryName"
+        id="Countries"
+      >
+        <option value="" disabled selected>Select a country</option>
+        <option *ngFor="let Country of Countries" [value]="Country.CountryName">
+          {{ Country.CountryName }}
+        </option>
+      </select>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="size-6 absolute right-5 top-1/2 transform -translate-y-1/2 w-7 h-7 text-white pl-4"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="m19.5 8.25-7.5 7.5-7.5-7.5"
         />
-        <label for="profilePictureInput" class="cursor-pointer">
-          <div
-            class="w-16 h-16 rounded-full border-2 border-gray-300 overflow-hidden relative"
-          >
-            <div class="flex justify-center items-center h-full">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="size-8 text-gray-300"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
-                />
-              </svg>
-              <div
-                class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-white opacity-0 hover:opacity-100 transition-opacity"
-              >
-                <span class="text-xs">Change</span>
-              </div>
-            </div>
-          </div>
-        </label>
-      </div>
-      <div>
+      </svg>
+    </div>
+
+    <div class="ml-3 flex flex-col text-white items-start gap-2">
+      <div class="flex gap-5">
         <div class="flex gap-3">
           <label for="male">Male</label>
           <input
@@ -153,6 +134,33 @@
             (click)="MakeFemale()"
           />
         </div>
+      </div>
+      <div class="flex justify-center items-center">
+        <input
+          type="file"
+          id="profilePictureInput"
+          class="hidden"
+          (change)="onFileSelected($event)"
+        />
+        <label for="profilePictureInput" class="cursor-pointer">
+          <div class="flex justify-center items-center h-full gap-3">
+            <p class="font-bold">Profile Picture</p>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="size-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M7.5 7.5h-.75A2.25 2.25 0 0 0 4.5 9.75v7.5a2.25 2.25 0 0 0 2.25 2.25h7.5a2.25 2.25 0 0 0 2.25-2.25v-7.5a2.25 2.25 0 0 0-2.25-2.25h-.75m0-3-3-3m0 0-3 3m3-3v11.25m6-2.25h.75a2.25 2.25 0 0 1 2.25 2.25v7.5a2.25 2.25 0 0 1-2.25 2.25h-7.5a2.25 2.25 0 0 1-2.25-2.25v-.75"
+              />
+            </svg>
+          </div>
+        </label>
       </div>
     </div>
 

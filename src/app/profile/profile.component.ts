@@ -35,16 +35,21 @@ export class ProfileComponent implements OnInit {
 
   getCurrentUser() {
     try {
-      this.route.paramMap.subscribe(async (params) => {
-        const id = +params.get('id')!;
+      this.route.paramMap.subscribe(
+        async (params) => {
+          const id = +params.get('id')!;
 
-        const User = await firstValueFrom(this.user_service.GetUser(id));
+          const User = await firstValueFrom(this.user_service.GetUser(id));
 
-        if (!User) return;
+          if (!User) return;
 
-        this.CurrentUser = User;
-        this.getCurrentPerson();
-      });
+          this.CurrentUser = User;
+          this.getCurrentPerson();
+        },
+        (err) => {
+          console.log(err);
+        },
+      );
     } catch (err) {
       console.log(err);
     }

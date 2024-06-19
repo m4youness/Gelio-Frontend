@@ -9,6 +9,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { CountryService } from '../../services/country.service';
 import { Country } from '../../models/country';
 import { firstValueFrom } from 'rxjs';
+import { CloudinaryService } from '../../services/cloudinary.service';
 
 @Component({
   selector: 'app-sign-up',
@@ -20,6 +21,7 @@ export class SignUpComponent implements OnInit {
     private person_service: PersonService,
     private user_service: UserService,
     private country_service: CountryService,
+    private cloudinaryService: CloudinaryService,
     private router: Router,
   ) {
     this.SignUpForm = new FormGroup({
@@ -127,8 +129,16 @@ export class SignUpComponent implements OnInit {
 
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
-      const filePath = file.name; // This gives you the file name
-      console.log('File Path:', filePath);
+
+      this.cloudinaryService.uploadImage(file).subscribe(
+        (data) => {
+          console.log(data);
+        },
+        (err) => {
+          console.log(err);
+          alert('error');
+        },
+      );
     }
   }
 }
