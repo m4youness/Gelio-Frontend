@@ -22,8 +22,8 @@ export class UserService {
     });
   }
 
-  IsLoggedIn(): Observable<boolean> {
-    return this.http.get<boolean>(this.ApiUrl + 'IsAuthenticated', {
+  MakeUserInActive(UserId?: number | null): Observable<Boolean> {
+    return this.http.get<Boolean>(this.ApiUrl + `User/InActive/${UserId}`, {
       withCredentials: true,
     });
   }
@@ -54,5 +54,9 @@ export class UserService {
 
   DoesUserExist(Login: LoginClass): Observable<boolean> {
     return this.http.post<boolean>(this.ApiUrl + 'User/Exists', Login);
+  }
+
+  IsNotActive(username?: string | null): Observable<Boolean> {
+    return this.http.get<Boolean>(this.ApiUrl + `User/IsNotActive/${username}`);
   }
 }

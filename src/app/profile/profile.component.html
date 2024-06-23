@@ -41,4 +41,13 @@
       </p>
     </div>
   </div>
+  <div class="flex justify-end">
+    <button
+      (click)="MakeUserInActive()"
+      *ngIf="loggedInId == id"
+      class="text-red-500 rounded-md border border-red-500 p-2 px-3 text-xs"
+    >
+      Delete Account
+    </button>
+  </div>
 </div>

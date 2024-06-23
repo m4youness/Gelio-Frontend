@@ -8,12 +8,14 @@ import { ApiUrl } from '../enviroment/ApiUrl';
 })
 export class CloudinaryService {
   constructor(private http: HttpClient) {}
-  private ApiUrl = ApiUrl;
+
+  private apiUrl = ApiUrl;
 
   uploadImage(file: File): Observable<string> {
     const data = new FormData();
     data.append('image', file);
-    return this.http.post<string>(this.ApiUrl + 'Image', data, {
+
+    return this.http.post<string>(this.apiUrl + 'Image', data, {
       withCredentials: true,
     });
   }

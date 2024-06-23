@@ -5,7 +5,7 @@ import { PersonService } from '../../services/person.service';
 import { Person } from '../../models/people';
 import { CountryService } from '../../services/country.service';
 import { firstValueFrom } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
@@ -18,7 +18,11 @@ export class ProfileComponent implements OnInit {
     private person_service: PersonService,
     private country_service: CountryService,
     private route: ActivatedRoute,
+    private router: Router,
   ) {}
+
+  id?: number | null;
+  loggedInId?: number | null;
 
   pageName: string = 'home';
 
@@ -29,17 +33,40 @@ export class ProfileComponent implements OnInit {
   Gender?: string | null;
   UserId?: number | null;
 
-  ngOnInit(): void {
+  async ngOnInit() {
+    try {
+      this.loggedInId = await firstValueFrom(this.user_service.CurrentUserId());
+    } catch (err) {
+      console.log(err);
+    }
     this.getCurrentUser();
+  }
+
+  async MakeUserInActive() {
+    try {
+      const UserId = await firstValueFrom(this.user_service.CurrentUserId());
+      const InActive: Boolean = await firstValueFrom(
+        this.user_service.MakeUserInActive(UserId),
+      );
+
+      if (InActive) {
+        const LoggedOut = await firstValueFrom(this.user_service.Logout());
+        if (LoggedOut) {
+          this.router.navigate(['/']);
+        }
+      }
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   getCurrentUser() {
     try {
       this.route.paramMap.subscribe(
         async (params) => {
-          const id = +params.get('id')!;
+          this.id = +params.get('id')!;
 
-          const User = await firstValueFrom(this.user_service.GetUser(id));
+          const User = await firstValueFrom(this.user_service.GetUser(this.id));
 
           if (!User) return;
 

@@ -52,22 +52,6 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
     this.MessageModeOn = false;
   }
 
-  IsLoggedIn() {
-    this.user_service.IsLoggedIn().subscribe(
-      (data) => {
-        if (data) {
-          alert('Logged in');
-        } else {
-          alert('not logged in');
-        }
-      },
-      (err) => {
-        console.log(err);
-        alert('not logged in');
-      },
-    );
-  }
-
   ContactModeOn() {
     this.ContactMode = !this.ContactMode;
     this.LoadContacts();
