@@ -36,6 +36,9 @@ export class SignUpComponent implements OnInit {
     });
   }
 
+  file: File | null = null;
+  loading: boolean = false;
+
   SignUpForm: FormGroup;
   currentDate: string = formatDate(new Date(), 'yyyy-MM-dd', 'en-US');
   Countries: Country[] = [];
@@ -101,6 +104,15 @@ export class SignUpComponent implements OnInit {
   }
 
   async AddUser(PersonId?: number | null) {
+    this.loading = true;
+
+    if (this.file) {
+      const ImageId = await firstValueFrom(
+        this.cloudinaryService.uploadImage(this.file),
+      );
+      this.user.ProfileImageId = ImageId;
+    }
+
     this.user.PersonID = PersonId;
     try {
       const UserId = await firstValueFrom(this.user_service.AddUser(this.user));
@@ -117,6 +129,7 @@ export class SignUpComponent implements OnInit {
       );
 
       if (LoggedIn) {
+        this.loading = false;
         this.router.navigate(['/home']);
       }
     } catch (err) {
@@ -128,17 +141,7 @@ export class SignUpComponent implements OnInit {
     const input = event.target as HTMLInputElement;
 
     if (input.files && input.files.length > 0) {
-      const file = input.files[0];
-
-      this.cloudinaryService.uploadImage(file).subscribe(
-        (data) => {
-          console.log(data);
-        },
-        (err) => {
-          console.log(err);
-          alert('error');
-        },
-      );
+      this.file = input.files[0];
     }
   }
 }

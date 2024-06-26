@@ -6,6 +6,7 @@ import { Person } from '../../models/people';
 import { CountryService } from '../../services/country.service';
 import { firstValueFrom } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
+import { CloudinaryService } from '../../services/cloudinary.service';
 
 @Component({
   selector: 'app-profile',
@@ -17,6 +18,7 @@ export class ProfileComponent implements OnInit {
     private user_service: UserService,
     private person_service: PersonService,
     private country_service: CountryService,
+    private cloudinary_service: CloudinaryService,
     private route: ActivatedRoute,
     private router: Router,
   ) {}
@@ -28,6 +30,7 @@ export class ProfileComponent implements OnInit {
 
   CurrentUser: User = {};
   CurrentPerson: Person = {};
+
   Country?: string | null;
   Age?: number | null;
   Gender?: string | null;
@@ -71,6 +74,7 @@ export class ProfileComponent implements OnInit {
           if (!User) return;
 
           this.CurrentUser = User;
+
           this.getCurrentPerson();
         },
         (err) => {

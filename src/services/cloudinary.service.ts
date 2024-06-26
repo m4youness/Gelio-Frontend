@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiUrl } from '../enviroment/ApiUrl';
+import { Image } from '../models/image';
 
 @Injectable({
   providedIn: 'root',
@@ -11,11 +12,14 @@ export class CloudinaryService {
 
   private apiUrl = ApiUrl;
 
-  uploadImage(file: File): Observable<string> {
+  uploadImage(file: File): Observable<number> {
     const data = new FormData();
     data.append('image', file);
+    return this.http.post<number>(this.apiUrl + 'Image', data);
+  }
 
-    return this.http.post<string>(this.apiUrl + 'Image', data, {
+  findImage(imageId: number): Observable<Image> {
+    return this.http.get<Image>(this.apiUrl + `Image/${imageId}`, {
       withCredentials: true,
     });
   }

@@ -17,6 +17,7 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 import { ProfileComponent } from './profile/profile.component';
 import { MessagesComponent } from './messages/messages.component';
+import { OverlayComponent } from './overlay/overlay.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { MessagesComponent } from './messages/messages.component';
     UnauthorizedComponent,
     ProfileComponent,
     MessagesComponent,
+    OverlayComponent,
   ],
   imports: [
     BrowserModule,

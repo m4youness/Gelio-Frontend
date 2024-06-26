@@ -13,15 +13,16 @@
       </button>
     </div>
     <div
-      class="border-b border-gray-800 p-8 text-white hover:bg-stone-950 cursor-pointer"
+      class="border-b border-gray-800 p-7 text-white hover:bg-stone-950 cursor-pointer flex gap-7"
       *ngFor="let user of Users"
-      (click)="LoadMessage(user.UserID)"
+      (click)="LoadMessage(user.User.UserID)"
       [ngClass]="{
         'hidden ': ContactMode,
-        'bg-stone-950': user.UserID === this.CurrentReceiverId
+        'bg-stone-950': user.User.UserID === this.CurrentReceiverId
       }"
     >
-      {{ user.Username || "loading..." }}
+      <img [src]="user.Url" class="size-9 rounded-full" />
+      <p class="mt-1">{{ user.User.Username || "loading..." }}</p>
     </div>
     <form *ngIf="ContactMode" [formGroup]="ContactForm" (submit)="AddContact()">
       <div class="relative flex items-center w-full">

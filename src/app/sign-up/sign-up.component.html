@@ -1,3 +1,4 @@
+<app-overlay [showOverlay]="loading"></app-overlay>
 <form
   [formGroup]="SignUpForm"
   (submit)="SignUp()"
@@ -13,7 +14,7 @@
       [(ngModel)]="person.FirstName"
       formControlName="firstname"
       [ngClass]="{
-        'border-1 border-rose-500':
+        'border-1 border-rose-600':
           SignUpForm.get('firstname')?.invalid &&
           SignUpForm.get('firstname')?.touched
       }"
@@ -25,7 +26,7 @@
       [(ngModel)]="person.LastName"
       formControlName="lastname"
       [ngClass]="{
-        'border-1 border-rose-500':
+        'border-1 border-rose-600':
           SignUpForm.get('lastname')?.invalid &&
           SignUpForm.get('lastname')?.touched
       }"
@@ -36,7 +37,7 @@
       [(ngModel)]="person.PhoneNumber"
       formControlName="phonenumber"
       [ngClass]="{
-        'border-1 border-rose-500':
+        'border-1 border-rose-600':
           SignUpForm.get('phonenumber')?.invalid &&
           SignUpForm.get('phonenumber')?.touched
       }"
@@ -48,7 +49,7 @@
       [(ngModel)]="person.Email"
       formControlName="email"
       [ngClass]="{
-        'border-1 border-rose-500':
+        'border-1 border-rose-600':
           SignUpForm.get('email')?.invalid && SignUpForm.get('email')?.touched
       }"
     />
@@ -58,7 +59,7 @@
       [(ngModel)]="person.DateOfBirth"
       formControlName="dateofbirth"
       [ngClass]="{
-        'border-1 border-rose-500':
+        'border-1 border-rose-600':
           SignUpForm.get('dateofbirth')?.invalid &&
           SignUpForm.get('dateofbirth')?.touched
       }"
@@ -69,7 +70,7 @@
       [(ngModel)]="user.Username"
       formControlName="username"
       [ngClass]="{
-        'border-1 border-rose-500':
+        'border-1 border-rose-600':
           SignUpForm.get('username')?.invalid &&
           SignUpForm.get('username')?.touched
       }"
@@ -81,7 +82,7 @@
       [(ngModel)]="user.Password"
       formControlName="password"
       [ngClass]="{
-        'border-1 border-rose-500':
+        'border-1 border-rose-600':
           SignUpForm.get('password')?.invalid &&
           SignUpForm.get('password')?.touched
       }"

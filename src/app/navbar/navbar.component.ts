@@ -3,6 +3,8 @@ import { UserService } from '../../services/user.service';
 import { User } from '../../models/user';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
+import { Image } from '../../models/image';
+import { CloudinaryService } from '../../services/cloudinary.service';
 
 @Component({
   selector: 'app-navbar',
@@ -14,10 +16,12 @@ export class NavbarComponent implements OnInit {
 
   constructor(
     private user_service: UserService,
+    private cloudinary_service: CloudinaryService,
     private router: Router,
   ) {}
 
   CurrentUser: User = {};
+  ProfilePicture: Image = {};
 
   ngOnInit(): void {
     this.GetCurrentUser();
@@ -40,6 +44,11 @@ export class NavbarComponent implements OnInit {
       }
 
       this.CurrentUser = user;
+
+      if (!this.CurrentUser.ProfileImageId) return;
+      this.ProfilePicture = await firstValueFrom(
+        this.cloudinary_service.findImage(this.CurrentUser.ProfileImageId),
+      );
     } catch (err) {
       this.router.navigate(['/error']);
       console.log(err);

@@ -7,6 +7,9 @@ import { ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { Router } from '@angular/router';
 import { Message } from '../../models/Message';
+import { CloudinaryService } from '../../services/cloudinary.service';
+import { UserWithProfileImage } from '../../models/user-with-profile';
+
 @Component({
   selector: 'app-messages',
   templateUrl: './messages.component.html',
@@ -18,6 +21,7 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
   constructor(
     private message_service: MessageService,
     private user_service: UserService,
+    private cloudinary_service: CloudinaryService,
     private router: Router,
   ) {
     this.MessageForm = new FormGroup({
@@ -38,7 +42,7 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
   MessageForm: FormGroup;
   ContactForm: FormGroup;
 
-  Users: User[] = [];
+  Users: UserWithProfileImage[] = [];
   Messages: Message[] = [];
 
   CurrentUserId?: number | null;
@@ -93,12 +97,13 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
         ),
       );
 
-      if (!Added) {
+      if (Added) {
+        this.ContactForm.controls['Contact'].setValue('');
+        this.ContactModeOn();
+      } else {
         alert('Could not add contact');
         return;
       }
-      this.ContactForm.controls['Contact'].setValue('');
-      this.ContactModeOn();
     } catch (err) {
       console.log(err);
       alert("Couldn't add contact");
@@ -165,14 +170,10 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
 
     this.CurrentReceiverId = ReceiverId;
     try {
-      const Messages: Message[] = await firstValueFrom(
+      this.Messages = [];
+      this.Messages = await firstValueFrom(
         this.message_service.LoadMessages(this.CurrentUserId, ReceiverId),
       );
-
-      this.Messages = [];
-      for (let msg of Messages) {
-        this.Messages.push(msg);
-      }
     } catch (err) {
       console.log(err);
     }
@@ -183,9 +184,19 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
       const user_id = await firstValueFrom(this.user_service.CurrentUserId());
 
       this.CurrentUserId = user_id;
-      this.Users = await firstValueFrom(
+      const Users: User[] = await firstValueFrom(
         this.message_service.LoadContacts(user_id),
       );
+
+      for (let user of Users) {
+        if (user.ProfileImageId) {
+          const Image = await firstValueFrom(
+            this.cloudinary_service.findImage(user.ProfileImageId),
+          );
+
+          this.Users.push({ User: user, Url: Image.Url });
+        }
+      }
     } catch (err) {
       console.log(err);
     }

@@ -45,14 +45,14 @@ export class SignInComponent implements OnInit {
     }
     try {
       console.log(this.username);
-      const IsActive: Boolean = await firstValueFrom(
-        this.user_service.IsNotActive(this.username),
-      );
+      //const IsActive: Boolean = await firstValueFrom(
+      // this.user_service.IsNotActive(this.username),
+      //);
 
-      if (!IsActive) {
-        alert('This user is not active');
-        return;
-      }
+      //if (!IsActive) {
+      //  alert('This user is not active');
+      //  return;
+      //}
 
       const LoggedIn: boolean = await firstValueFrom(
         this.user_service.Login({
