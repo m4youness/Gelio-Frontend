@@ -13,15 +13,12 @@ export class MessageService {
   constructor(private http: HttpClient) {}
 
   LoadContacts(PersonId?: number | null): Observable<User[]> {
-    return this.http.get<User[]>(this.ApiUrl + `LoadContacts/${PersonId}`, {
+    return this.http.get<User[]>(this.ApiUrl + `Contacts/${PersonId}`, {
       withCredentials: true,
     });
   }
 
-  LoadMessages(
-    SenderID?: number | null,
-    ReceiverID?: number | null,
-  ): Observable<Message[]> {
+  LoadMessages(SenderID: number, ReceiverID: number): Observable<Message[]> {
     return this.http.post<Message[]>(
       this.ApiUrl + 'LoadMessages',
       {
@@ -33,10 +30,10 @@ export class MessageService {
   }
 
   SendMessage(
-    senderId?: number | null,
-    receiverId?: number | null,
-    message?: string | null,
-    sentDate?: string | null,
+    senderId: number,
+    receiverId: number,
+    message: string,
+    sentDate: string,
   ): Observable<number> {
     return this.http.post<number>(
       this.ApiUrl + 'Message',
@@ -50,10 +47,7 @@ export class MessageService {
     );
   }
 
-  AddContact(
-    username?: string | null,
-    userId?: number | null,
-  ): Observable<boolean> {
+  AddContact(username: string, userId: number): Observable<boolean> {
     return this.http.post<boolean>(
       this.ApiUrl + 'Contact',
       {

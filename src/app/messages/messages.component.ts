@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { Message } from '../../models/Message';
 import { CloudinaryService } from '../../services/cloudinary.service';
 import { UserWithProfileImage } from '../../models/user-with-profile';
+import { DateUtilService } from '../../services/date-util.service';
 
 @Component({
   selector: 'app-messages',
@@ -22,6 +23,7 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
     private message_service: MessageService,
     private user_service: UserService,
     private cloudinary_service: CloudinaryService,
+    private date_util_service: DateUtilService,
     private router: Router,
   ) {
     this.MessageForm = new FormGroup({
@@ -90,6 +92,7 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
         this.ContactForm.markAllAsTouched();
         return;
       }
+      if (!this.CurrentUserId) return;
       const Added = await firstValueFrom(
         this.message_service.AddContact(
           this.ContactForm.controls['Contact'].value,
@@ -108,20 +111,6 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
       console.log(err);
       alert("Couldn't add contact");
     }
-  }
-
-  getCurrentDateTimeString(): string {
-    const date = new Date();
-
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    const seconds = String(date.getSeconds()).padStart(2, '0');
-
-    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
   }
 
   scrollToBottom(): void {
@@ -144,12 +133,13 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
     }
 
     try {
+      if (!this.CurrentUserId || !this.CurrentReceiverId) return;
       const Sent = await firstValueFrom(
         this.message_service.SendMessage(
           this.CurrentUserId,
           this.CurrentReceiverId,
           this.MessageForm.controls['Message'].value,
-          this.getCurrentDateTimeString(),
+          this.date_util_service.getCurrentDateTimeString(),
         ),
       );
       if (!Sent) {
@@ -169,6 +159,7 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
     this.MessageModeOn = true;
 
     this.CurrentReceiverId = ReceiverId;
+    if (!this.CurrentUserId || !ReceiverId) return;
     try {
       this.Messages = [];
       this.Messages = await firstValueFrom(
@@ -180,6 +171,7 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
   }
 
   async LoadContacts() {
+    this.Users = [];
     try {
       const user_id = await firstValueFrom(this.user_service.CurrentUserId());
 

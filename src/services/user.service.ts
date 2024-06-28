@@ -22,7 +22,7 @@ export class UserService {
     });
   }
 
-  MakeUserInActive(UserId?: number | null): Observable<Boolean> {
+  MakeUserInActive(UserId: number): Observable<Boolean> {
     return this.http.get<Boolean>(this.ApiUrl + `User/InActive/${UserId}`, {
       withCredentials: true,
     });
@@ -46,7 +46,7 @@ export class UserService {
     });
   }
 
-  GetUser(id?: number | null): Observable<User> {
+  GetUser(id: number): Observable<User> {
     return this.http.get<User>(this.ApiUrl + `User/${id}`, {
       withCredentials: true,
     });
@@ -56,7 +56,7 @@ export class UserService {
     return this.http.post<boolean>(this.ApiUrl + 'User/Exists', Login);
   }
 
-  IsNotActive(username?: string | null): Observable<Boolean> {
+  IsNotActive(username: string): Observable<Boolean> {
     return this.http.get<Boolean>(this.ApiUrl + `User/IsNotActive/${username}`);
   }
 }

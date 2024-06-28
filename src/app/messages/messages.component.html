@@ -15,10 +15,10 @@
     <div
       class="border-b border-gray-800 p-7 text-white hover:bg-stone-950 cursor-pointer flex gap-7"
       *ngFor="let user of Users"
-      (click)="LoadMessage(user.User.UserID)"
+      (click)="LoadMessage(user.User.UserId)"
       [ngClass]="{
         'hidden ': ContactMode,
-        'bg-stone-950': user.User.UserID === this.CurrentReceiverId
+        'bg-stone-950': user.User.UserId === this.CurrentReceiverId
       }"
     >
       <img [src]="user.Url" class="size-9 rounded-full" />

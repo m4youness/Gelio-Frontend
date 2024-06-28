@@ -28,7 +28,7 @@ export class NavbarComponent implements OnInit {
   }
 
   GoToUserProfile() {
-    this.router.navigate(['/profile', this.CurrentUser.UserID]);
+    this.router.navigate(['/profile', this.CurrentUser.UserId]);
   }
 
   async GetCurrentUser() {

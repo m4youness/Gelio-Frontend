@@ -6,7 +6,7 @@ import { Person } from '../../models/people';
 import { CountryService } from '../../services/country.service';
 import { firstValueFrom } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CloudinaryService } from '../../services/cloudinary.service';
+import { DateUtilService } from '../../services/date-util.service';
 
 @Component({
   selector: 'app-profile',
@@ -18,7 +18,7 @@ export class ProfileComponent implements OnInit {
     private user_service: UserService,
     private person_service: PersonService,
     private country_service: CountryService,
-    private cloudinary_service: CloudinaryService,
+    private date_util_service: DateUtilService,
     private route: ActivatedRoute,
     private router: Router,
   ) {}
@@ -88,6 +88,7 @@ export class ProfileComponent implements OnInit {
 
   async getCurrentPerson() {
     try {
+      if (!this.CurrentUser.PersonID) return;
       const Person = await firstValueFrom(
         this.person_service.GetPerson(this.CurrentUser.PersonID),
       );
@@ -103,7 +104,9 @@ export class ProfileComponent implements OnInit {
       );
 
       if (this.CurrentPerson.DateOfBirth) {
-        this.Age = this.CalculateAge(this.CurrentPerson.DateOfBirth);
+        this.Age = this.date_util_service.calculateAge(
+          this.CurrentPerson.DateOfBirth,
+        );
       }
 
       if (this.CurrentPerson.GenderID) {
@@ -112,19 +115,5 @@ export class ProfileComponent implements OnInit {
     } catch (err) {
       console.log(err);
     }
-  }
-
-  CalculateAge(DateOfBirth: string) {
-    const today = new Date();
-
-    const dob = new Date(DateOfBirth);
-    let age = today.getFullYear() - dob.getFullYear();
-    const monthDiff = today.getMonth() - dob.getMonth();
-
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
-      age--;
-    }
-
-    return age;
   }
 }
