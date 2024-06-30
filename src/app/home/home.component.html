@@ -3,9 +3,9 @@
 <div class="h-screen flex flex-col overflow-y-scroll bg-black">
   <div
     *ngFor="let post of Posts; let i = index"
-    class="text-white flex gap-5 mt-12 w-full justify-center px-4"
+    class="text-white flex w-full justify-center px-4 mt-12"
   >
-    <div class="w-[500px] max-h-[500px] flex flex-col gap-1">
+    <div class="w-[500px] h-full flex flex-col gap-1">
       <div class="flex justify-between mb-1">
         <div class="flex gap-4">
           <img
@@ -38,7 +38,7 @@
             stroke="currentColor"
             class="size-7"
             [ngClass]="{
-              'text-rose-500': this.Posts[i].IsLiked,
+              'text-[rgb(255,0,0)]': this.Posts[i].IsLiked,
               'hover:text-gray-400': !this.Posts[i].IsLiked
             }"
           >
@@ -65,9 +65,9 @@
         </svg>
       </div>
       <p class="font-bold ml-1">{{ post.Likes + " likes" }}</p>
-      <div class="flex gap-2 ml-1">
+      <div class="flex gap-2">
         <p class="font-bold">{{ post.User.Username }}</p>
-        <p>{{ post.Post.Body }}</p>
+        <p class="mb-1">{{ post.Post.Body }}</p>
       </div>
     </div>
   </div>

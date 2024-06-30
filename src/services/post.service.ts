@@ -15,4 +15,17 @@ export class PostService {
       withCredentials: true,
     });
   }
+
+  UploadPost(post: Post): Observable<number> {
+    return this.http.post<number>(
+      this.apiUrl + 'Post',
+      {
+        Message: post.Body,
+        UserId: post.UserId,
+        CreatedDate: post.CreatedDate,
+        ImageId: post.ImageId,
+      },
+      { withCredentials: true },
+    );
+  }
 }

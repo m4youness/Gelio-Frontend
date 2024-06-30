@@ -26,7 +26,7 @@ export class ProfileComponent implements OnInit {
   id?: number | null;
   loggedInId?: number | null;
 
-  pageName: string = 'home';
+  pageName: string = 'messages';
 
   CurrentUser: User = {};
   CurrentPerson: Person = {};

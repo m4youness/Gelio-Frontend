@@ -1,14 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { MessageService } from '../../services/message.service';
 import { UserService } from '../../services/user.service';
-import { User } from '../../models/user';
+import { User, UserWithProfileImage } from '../../models/user';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { Router } from '@angular/router';
 import { Message } from '../../models/Message';
 import { CloudinaryService } from '../../services/cloudinary.service';
-import { UserWithProfileImage } from '../../models/user-with-profile';
 import { DateUtilService } from '../../services/date-util.service';
 
 @Component({
@@ -186,7 +185,9 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
             this.cloudinary_service.findImage(user.ProfileImageId),
           );
 
-          this.Users.push({ User: user, Url: Image.Url });
+          const UserDetails = new UserWithProfileImage(user, Image.Url);
+
+          this.Users.push(UserDetails);
         }
       }
     } catch (err) {

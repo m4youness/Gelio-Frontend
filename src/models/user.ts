@@ -7,3 +7,13 @@ export class User {
   ProfileImageId?: number | null;
   PersonID?: number | null;
 }
+
+export class UserWithProfileImage {
+  User: User;
+  Url: string | null;
+
+  constructor(user: User, url: string | null = null) {
+    this.User = user;
+    this.Url = url;
+  }
+}

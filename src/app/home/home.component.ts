@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Post, PostWithImage } from '../../models/post';
+import { Post, PostDetails } from '../../models/post';
 import { UserService } from '../../services/user.service';
 import { PostService } from '../../services/post.service';
 import { firstValueFrom } from 'rxjs';
@@ -22,7 +22,7 @@ export class HomeComponent implements OnInit {
     private post_likes_service: PostLikesService,
   ) {}
 
-  Posts: PostWithImage[] = [];
+  Posts: PostDetails[] = [];
 
   CurrentUserId?: number | null;
 
@@ -57,10 +57,14 @@ export class HomeComponent implements OnInit {
 
   async GetPosts() {
     try {
-      const UserId = await firstValueFrom(this.user_service.CurrentUserId());
-      const Posts: Post[] = await firstValueFrom(
-        this.post_service.GetPosts(UserId),
+      this.CurrentUserId = await firstValueFrom(
+        this.user_service.CurrentUserId(),
       );
+      const Posts: Post[] = await firstValueFrom(
+        this.post_service.GetPosts(this.CurrentUserId),
+      );
+
+      console.log(Posts);
 
       for (let post of Posts) {
         if (post.ImageId && post.UserId && post.PostId) {
@@ -79,28 +83,26 @@ export class HomeComponent implements OnInit {
 
           post.CreatedDate = date;
 
-          this.CurrentUserId = await firstValueFrom(
-            this.user_service.CurrentUserId(),
-          );
-
           const IsLiked = await firstValueFrom(
             this.post_likes_service.IsPostLiked(
               post.PostId,
               this.CurrentUserId,
             ),
           );
-
           const Likes = await firstValueFrom(
             this.post_likes_service.GetAmountOfLikes(post.PostId),
           );
-          this.Posts.push({
-            Post: post,
-            User: user,
-            ImageUrl: Image.Url,
-            ProfileUrl: Profile.Url,
-            IsLiked: IsLiked,
-            Likes: Likes,
-          });
+
+          const Post = new PostDetails(
+            post,
+            user,
+            Image.Url,
+            Profile.Url,
+            IsLiked,
+            Likes,
+          );
+
+          this.Posts.push(Post);
         }
       }
     } catch (err) {

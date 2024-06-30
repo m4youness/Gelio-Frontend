@@ -1,11 +1,17 @@
 <div
   class="w-full bg-black flex items-center justify-between text-white py-5 border-b border-gray-800"
 >
-  <div *ngIf="PageName == 'messages'" class="flex">
-    <a routerLink="/home" class="hover:underline px-5">Home</a>
-  </div>
-  <div *ngIf="PageName == 'home'" class="flex">
-    <a routerLink="/messages" class="hover:underline px-5">Messages</a>
+  <div class="flex">
+    <div *ngIf="PageName == 'messages' || PageName == 'create'" class="flex">
+      <a routerLink="/home" class="hover:underline px-5">Home</a>
+    </div>
+    <div *ngIf="PageName == 'home'">
+      <a routerLink="/create" class="hover:underline px-5">Create</a>
+    </div>
+
+    <div *ngIf="PageName == 'home' || PageName == 'create'" class="flex">
+      <a routerLink="/messages" class="hover:underline">Messages</a>
+    </div>
   </div>
   <div class="flex gap-4 text-white mr-5">
     <div class="flex gap-3">

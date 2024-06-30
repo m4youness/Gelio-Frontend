@@ -1,0 +1,96 @@
+<app-navbar [PageName]="pageName"></app-navbar>
+
+<app-overlay [showOverlay]="loading"></app-overlay>
+<div class="h-screen bg-black w-full flex justify-center overflow-y-scroll">
+  <form
+    class="flex flex-col lg:flex-row mt-12 gap-9"
+    [formGroup]="UploadGroup"
+    (submit)="Upload()"
+  >
+    <div class="flex flex-col gap-2">
+      <p class="text-white font-bold">File Upload</p>
+      <label
+        for="dropzone-file"
+        class="flex flex-col items-center justify-center h-96 lg:w-[500px] w-96 border-2 border-dashed rounded-lg cursor-pointer hover:bg-zinc-800 bg-zinc-900 border-gray-600 hover:border-gray-500"
+      >
+        <div class="flex flex-col items-center justify-center pt-5 pb-6">
+          <svg
+            class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 20 16"
+          >
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+            />
+          </svg>
+          <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
+            <span class="font-semibold">Click to upload</span> or drag and drop
+          </p>
+          <p class="text-xs text-gray-500 dark:text-gray-400">
+            SVG, PNG, JPG or GIF
+          </p>
+        </div>
+        <input
+          id="dropzone-file"
+          type="file"
+          class="hidden"
+          (change)="onFileSelected($event)"
+        />
+      </label>
+    </div>
+
+    <div class="flex flex-col gap-2 lg:mt-8">
+      <label for="description" class="text-white font-bold">Description</label>
+      <textarea
+        id="description"
+        placeholder="Write a detailed description"
+        formControlName="description"
+        rows="10"
+        class="bg-zinc-900 border-2 border-gray-600 text-white rounded-lg focus:outline-none px-3 py-1 w-96 h-36 max-h-80 min-h-36"
+        [ngClass]="{
+          'border-1 border-gray-600': !(
+            UploadGroup.get('description')?.invalid &&
+            UploadGroup.get('description')?.touched
+          ),
+          'border-1 border-rose-600':
+            UploadGroup.get('description')?.invalid &&
+            UploadGroup.get('description')?.touched
+        }"
+      ></textarea>
+      <div
+        *ngIf="
+          UploadGroup.get('description')?.invalid &&
+          UploadGroup.get('description')?.touched
+        "
+        class="text-rose-600"
+      >
+        <div *ngIf="UploadGroup.get('description')?.hasError('required')">
+          Description is required.
+        </div>
+        <div *ngIf="UploadGroup.get('description')?.hasError('maxLength')">
+          Description cannot be longer than 500 characters.
+        </div>
+      </div>
+      <div class="flex gap-3 justify-end my-4">
+        <a
+          class="bg-zinc-800 rounded-lg text-white p-2 px-3 hover:bg-zinc-700"
+          routerLink="/home"
+        >
+          Go Back
+        </a>
+
+        <button
+          class="bg-blue-700 rounded-lg text-white p-2 px-3 hover:bg-blue-600"
+        >
+          Upload
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
