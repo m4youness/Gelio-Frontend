@@ -11,6 +11,8 @@ import { Country } from '../../models/country';
 import { firstValueFrom } from 'rxjs';
 import { CloudinaryService } from '../../services/cloudinary.service';
 
+import { NgxImageCompressService } from 'ngx-image-compress';
+
 @Component({
   selector: 'app-sign-up',
   templateUrl: './sign-up.component.html',
@@ -22,6 +24,7 @@ export class SignUpComponent implements OnInit {
     private user_service: UserService,
     private country_service: CountryService,
     private cloudinaryService: CloudinaryService,
+    private imageCompress: NgxImageCompressService,
     private router: Router,
   ) {
     this.SignUpForm = new FormGroup({
@@ -141,7 +144,32 @@ export class SignUpComponent implements OnInit {
     const input = event.target as HTMLInputElement;
 
     if (input.files && input.files.length > 0) {
-      this.file = input.files[0];
+      const file = input.files[0];
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64String = reader.result as string;
+
+        this.imageCompress
+          .compressFile(
+            base64String,
+            -1, // orientation
+            70, // compress quality (0-100)
+            150, // max width
+            150, // max height
+          )
+          .then((result: string) => {
+            const byteString = atob(result.split(',')[1]);
+            const arrayBuffer = new ArrayBuffer(byteString.length);
+            const int8Array = new Uint8Array(arrayBuffer);
+            for (let i = 0; i < byteString.length; i++) {
+              int8Array[i] = byteString.charCodeAt(i);
+            }
+            const blob = new Blob([int8Array], { type: 'image/jpeg' });
+            this.file = new File([blob], file.name, { type: 'image/jpeg' });
+          });
+      };
+      reader.readAsDataURL(file);
     }
   }
 }

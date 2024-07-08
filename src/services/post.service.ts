@@ -10,6 +10,7 @@ import { ApiUrl } from '../enviroment/ApiUrl';
 export class PostService {
   constructor(private http: HttpClient) {}
   private apiUrl = ApiUrl;
+
   GetPosts(UserId: number): Observable<Post[]> {
     return this.http.get<Post[]>(this.apiUrl + `Posts/${UserId}`, {
       withCredentials: true,

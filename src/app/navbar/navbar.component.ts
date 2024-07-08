@@ -20,9 +20,16 @@ export class NavbarComponent implements OnInit {
     private router: Router,
   ) {}
 
+  rotationAngle: number = 0;
   CurrentUser: User = {};
   ProfilePicture: Image = {};
 
+  NavigationPopup: boolean = false;
+
+  OpenPopup() {
+    this.NavigationPopup = !this.NavigationPopup;
+    this.rotationAngle = this.rotationAngle === 0 ? 90 : 0;
+  }
   ngOnInit(): void {
     this.GetCurrentUser();
   }

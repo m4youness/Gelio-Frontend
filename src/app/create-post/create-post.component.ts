@@ -6,6 +6,7 @@ import { DateUtilService } from '../../services/date-util.service';
 import { UserService } from '../../services/user.service';
 import { Post } from '../../models/post';
 import { CloudinaryService } from '../../services/cloudinary.service';
+import { NgxImageCompressService } from 'ngx-image-compress';
 import { Router } from '@angular/router';
 
 @Component({
@@ -24,6 +25,7 @@ export class CreatePostComponent {
     private user_service: UserService,
     private cloudinary_service: CloudinaryService,
     private router: Router,
+    private imageCompress: NgxImageCompressService,
   ) {
     this.UploadGroup = new FormGroup({
       description: new FormControl('', [
@@ -69,7 +71,32 @@ export class CreatePostComponent {
     const input = event.target as HTMLInputElement;
 
     if (input.files && input.files.length > 0) {
-      this.file = input.files[0];
+      const file = input.files[0];
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64String = reader.result as string;
+
+        this.imageCompress
+          .compressFile(
+            base64String,
+            -1, // orientation
+            70, // compress quality (0-100)
+            400, // max width
+            400, // max height
+          )
+          .then((result: string) => {
+            const byteString = atob(result.split(',')[1]);
+            const arrayBuffer = new ArrayBuffer(byteString.length);
+            const int8Array = new Uint8Array(arrayBuffer);
+            for (let i = 0; i < byteString.length; i++) {
+              int8Array[i] = byteString.charCodeAt(i);
+            }
+            const blob = new Blob([int8Array], { type: 'image/jpeg' });
+            this.file = new File([blob], file.name, { type: 'image/jpeg' });
+          });
+      };
+      reader.readAsDataURL(file);
     }
   }
 }

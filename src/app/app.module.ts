@@ -19,6 +19,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { MessagesComponent } from './messages/messages.component';
 import { OverlayComponent } from './overlay/overlay.component';
 import { CreatePostComponent } from './create-post/create-post.component';
+import { NgxDropzoneModule } from 'ngx-dropzone';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import { CreatePostComponent } from './create-post/create-post.component';
     FormsModule,
     RouterModule,
     ReactiveFormsModule,
+    NgxDropzoneModule,
   ],
   providers: [provideClientHydration()],
   bootstrap: [AppComponent],

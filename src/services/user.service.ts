@@ -35,13 +35,13 @@ export class UserService {
   }
 
   AddUser(User: User): Observable<number> {
-    return this.http.post<number>(this.ApiUrl + 'User', User, {
+    return this.http.post<number>(this.ApiUrl + 'Register', User, {
       withCredentials: true,
     });
   }
 
   CurrentUserId(): Observable<number> {
-    return this.http.get<number>(this.ApiUrl + 'UserId', {
+    return this.http.get<number>(this.ApiUrl + 'User/Id', {
       withCredentials: true,
     });
   }

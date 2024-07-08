@@ -17,7 +17,7 @@ export class CountryService {
   }
 
   GetCountryWithName(countryName: string): Observable<number> {
-    return this.http.post<number>(this.ApiUrl + 'GetCountryWithName', {
+    return this.http.post<number>(this.ApiUrl + 'Get/Country/With/Name', {
       CountryName: countryName,
     });
   }

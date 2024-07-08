@@ -34,6 +34,8 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
     });
   }
 
+  socket?: WebSocket | null;
+
   MessageModeOn: boolean = false;
   ContactMode: boolean = false;
 
@@ -51,6 +53,27 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
 
   ngAfterViewChecked(): void {
     this.scrollToBottom();
+  }
+
+  ConnectToSockets() {
+    const Socket = new WebSocket('ws://localhost:3000/ws');
+    console.log(Socket);
+
+    Socket.addEventListener('open', () => {
+      Socket.send(`${this.CurrentUserId}-${this.CurrentReceiverId}`);
+    });
+
+    // Listen for messages
+    Socket.addEventListener('message', (event) => {
+      this.Messages.push({
+        SenderId: this.CurrentReceiverId,
+        ReceiverId: this.CurrentUserId,
+        MessageBody: event.data,
+        SentDate: this.date_util_service.getCurrentDateTimeString(),
+      });
+    });
+
+    this.socket = Socket;
   }
 
   ExpandMessagePanel() {
@@ -133,11 +156,13 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
 
     try {
       if (!this.CurrentUserId || !this.CurrentReceiverId) return;
+      const msg = this.MessageForm.controls['Message'].value;
+
       const Sent = await firstValueFrom(
         this.message_service.SendMessage(
           this.CurrentUserId,
           this.CurrentReceiverId,
-          this.MessageForm.controls['Message'].value,
+          msg,
           this.date_util_service.getCurrentDateTimeString(),
         ),
       );
@@ -146,6 +171,7 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
         return;
       }
 
+      this.socket?.send(msg);
       this.MessageForm.controls['Message'].setValue('');
       this.LoadMessage(this.CurrentReceiverId, true);
     } catch (err) {
@@ -158,12 +184,15 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
     this.MessageModeOn = true;
 
     this.CurrentReceiverId = ReceiverId;
+
     if (!this.CurrentUserId || !ReceiverId) return;
     try {
       this.Messages = [];
       this.Messages = await firstValueFrom(
         this.message_service.LoadMessages(this.CurrentUserId, ReceiverId),
       );
+
+      this.ConnectToSockets();
     } catch (err) {
       console.log(err);
     }

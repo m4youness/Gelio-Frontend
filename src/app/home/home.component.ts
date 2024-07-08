@@ -6,6 +6,10 @@ import { firstValueFrom } from 'rxjs';
 import { CloudinaryService } from '../../services/cloudinary.service';
 import { DateUtilService } from '../../services/date-util.service';
 import { PostLikesService } from '../../services/post-likes.service';
+import { CommentsService } from '../../services/comments.service';
+import { CommentDetails, Comments } from '../../models/comments';
+import { UserWithProfileImage } from '../../models/user';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-home',
@@ -20,11 +24,76 @@ export class HomeComponent implements OnInit {
     private cloudinary_service: CloudinaryService,
     private date_util_service: DateUtilService,
     private post_likes_service: PostLikesService,
-  ) {}
+    private comments_service: CommentsService,
+  ) {
+    this.CommentsGroup = new FormGroup({
+      comment: new FormControl('', [
+        Validators.required,
+        Validators.maxLength(500),
+      ]),
+    });
+  }
 
   Posts: PostDetails[] = [];
+  Comments: CommentDetails[] = [];
 
   CurrentUserId?: number | null;
+  CommentsOn: boolean = false;
+
+  CommentsGroup: FormGroup;
+
+  CloseComments() {
+    this.CommentsOn = false;
+  }
+
+  async AddComment(i: number) {
+    if (!this.CommentsGroup.valid) return;
+
+    try {
+      const comment = new Comments(
+        this.Posts[i].Post.PostId,
+        this.CurrentUserId,
+        this.CommentsGroup.controls['comment'].value,
+        this.date_util_service.getCurrentDateTimeString(),
+      );
+      await firstValueFrom(this.comments_service.AddComment(comment));
+      this.CommentsGroup.controls['comment'].setValue('');
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async OpenComments(i: number) {
+    this.CommentsOn = true;
+    this.Comments = [];
+    try {
+      const Comments = await firstValueFrom(
+        this.comments_service.GetComments(this.Posts[i].Post.PostId),
+      );
+
+      for (let Comment of Comments) {
+        if (!Comment.UserId) return;
+        const User = await firstValueFrom(
+          this.user_service.GetUser(Comment.UserId),
+        );
+        if (!User.ProfileImageId) return;
+
+        const Image = await firstValueFrom(
+          this.cloudinary_service.findImage(User.ProfileImageId),
+        );
+
+        const userWithProfileImage = new UserWithProfileImage(User, Image.Url);
+
+        const commentDetails = new CommentDetails(
+          Comment,
+          userWithProfileImage,
+        );
+        this.Comments.push(commentDetails);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   async Like(i: number) {
     try {
@@ -63,8 +132,6 @@ export class HomeComponent implements OnInit {
       const Posts: Post[] = await firstValueFrom(
         this.post_service.GetPosts(this.CurrentUserId),
       );
-
-      console.log(Posts);
 
       for (let post of Posts) {
         if (post.ImageId && post.UserId && post.PostId) {

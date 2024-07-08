@@ -20,7 +20,7 @@ export class MessageService {
 
   LoadMessages(SenderID: number, ReceiverID: number): Observable<Message[]> {
     return this.http.post<Message[]>(
-      this.ApiUrl + 'LoadMessages',
+      this.ApiUrl + 'Load/Messages',
       {
         SenderId: SenderID,
         ReceiverId: ReceiverID,
