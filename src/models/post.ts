@@ -1,4 +1,3 @@
-import { Comments } from './comments';
 import { User } from './user';
 
 export class Post {

@@ -18,6 +18,9 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 })
 export class HomeComponent implements OnInit {
   pageName: string = 'home';
+  PlaceHolderImage: string =
+    'https://res.cloudinary.com/geliobackend/image/upload/v1720033720/profile-icon-design-free-vector.jpg.jpg';
+
   constructor(
     private user_service: UserService,
     private post_service: PostService,
@@ -76,7 +79,24 @@ export class HomeComponent implements OnInit {
         const User = await firstValueFrom(
           this.user_service.GetUser(Comment.UserId),
         );
-        if (!User.ProfileImageId) return;
+        if (!User.ProfileImageId) {
+          return;
+        }
+
+        if (User.ProfileImageId == 1) {
+          const userWithProfileImage = new UserWithProfileImage(
+            User,
+            'https://res.cloudinary.com/geliobackend/image/upload/v1720033720/profile-icon-design-free-vector.jpg.jpg',
+          );
+
+          const commentDetails = new CommentDetails(
+            Comment,
+            userWithProfileImage,
+          );
+
+          this.Comments.push(commentDetails);
+          return;
+        }
 
         const Image = await firstValueFrom(
           this.cloudinary_service.findImage(User.ProfileImageId),
@@ -141,10 +161,10 @@ export class HomeComponent implements OnInit {
           const user = await firstValueFrom(
             this.user_service.GetUser(post.UserId),
           );
-          if (!user.ProfileImageId) return;
-          const Profile = await firstValueFrom(
-            this.cloudinary_service.findImage(user.ProfileImageId),
-          );
+          if (!user.ProfileImageId) {
+            return;
+          }
+
           if (!post.CreatedDate) return;
           const date = this.date_util_service.getRelativeTime(post.CreatedDate);
 
@@ -158,6 +178,27 @@ export class HomeComponent implements OnInit {
           );
           const Likes = await firstValueFrom(
             this.post_likes_service.GetAmountOfLikes(post.PostId),
+          );
+
+          if (user.ProfileImageId == 1) {
+            const ProfileUrl =
+              'https://res.cloudinary.com/geliobackend/image/upload/v1720033720/profile-icon-design-free-vector.jpg.jpg';
+
+            const Post = new PostDetails(
+              post,
+              user,
+              Image.Url,
+              ProfileUrl,
+              IsLiked,
+              Likes,
+            );
+
+            this.Posts.push(Post);
+            continue;
+          }
+
+          const Profile = await firstValueFrom(
+            this.cloudinary_service.findImage(user.ProfileImageId),
           );
 
           const Post = new PostDetails(

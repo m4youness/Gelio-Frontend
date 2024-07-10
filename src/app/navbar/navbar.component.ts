@@ -30,6 +30,7 @@ export class NavbarComponent implements OnInit {
     this.NavigationPopup = !this.NavigationPopup;
     this.rotationAngle = this.rotationAngle === 0 ? 90 : 0;
   }
+
   ngOnInit(): void {
     this.GetCurrentUser();
   }
@@ -52,7 +53,20 @@ export class NavbarComponent implements OnInit {
 
       this.CurrentUser = user;
 
-      if (!this.CurrentUser.ProfileImageId) return;
+      if (!this.CurrentUser.ProfileImageId) {
+        return;
+      }
+
+      if (this.CurrentUser.ProfileImageId == 1) {
+        const ProfileUrl =
+          'https://res.cloudinary.com/geliobackend/image/upload/v1720033720/profile-icon-design-free-vector.jpg.jpg';
+
+        this.ProfilePicture = {
+          Url: ProfileUrl,
+        };
+        return;
+      }
+
       this.ProfilePicture = await firstValueFrom(
         this.cloudinary_service.findImage(this.CurrentUser.ProfileImageId),
       );

@@ -181,6 +181,10 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
 
   async LoadMessage(ReceiverId?: number | null, IsMessaging: boolean = false) {
     if (!IsMessaging) this.GetCurrentReceiverName(ReceiverId);
+    if (this.socket) {
+      this.socket.close();
+      this.socket = null;
+    }
     this.MessageModeOn = true;
 
     this.CurrentReceiverId = ReceiverId;
@@ -209,15 +213,25 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
       );
 
       for (let user of Users) {
-        if (user.ProfileImageId) {
-          const Image = await firstValueFrom(
-            this.cloudinary_service.findImage(user.ProfileImageId),
-          );
-
-          const UserDetails = new UserWithProfileImage(user, Image.Url);
-
-          this.Users.push(UserDetails);
+        if (!user.ProfileImageId) {
+          return;
         }
+
+        if (user.ProfileImageId == 1) {
+          const ProfileUrl =
+            'https://res.cloudinary.com/geliobackend/image/upload/v1720033720/profile-icon-design-free-vector.jpg.jpg';
+
+          const UserDetails = new UserWithProfileImage(user, ProfileUrl);
+          this.Users.push(UserDetails);
+          continue;
+        }
+        const Image = await firstValueFrom(
+          this.cloudinary_service.findImage(user.ProfileImageId),
+        );
+
+        const UserDetails = new UserWithProfileImage(user, Image.Url);
+
+        this.Users.push(UserDetails);
       }
     } catch (err) {
       console.log(err);

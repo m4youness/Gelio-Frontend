@@ -27,7 +27,7 @@
         </p>
       </div>
 
-      <img [src]="post.ImageUrl" class="object-contain" />
+      <img [src]="post.ImageUrl || PlaceHolderImage" class="object-contain" />
       <div class="flex gap-2 mt-1">
         <button (click)="Like(i)">
           <svg

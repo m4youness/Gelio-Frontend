@@ -36,8 +36,10 @@ export class CreatePostComponent {
   }
 
   UploadGroup: FormGroup;
+  ButtonPressed: boolean = false;
 
   async Upload() {
+    this.ButtonPressed = true;
     if (!this.UploadGroup.valid) {
       this.UploadGroup.markAllAsTouched();
       return;
@@ -59,8 +61,6 @@ export class CreatePostComponent {
         await firstValueFrom(this.post_service.UploadPost(post));
         this.loading = false;
         this.router.navigate(['/home']);
-      } else {
-        alert('Please select a file');
       }
     } catch (err) {
       console.log(err);
