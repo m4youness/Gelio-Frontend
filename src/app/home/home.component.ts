@@ -49,10 +49,6 @@ export class HomeComponent implements OnInit {
     this.CommentsOn = false;
   }
 
-  onImageLoad(index: number): void {
-    this.imageLoaded[index] = true;
-  }
-
   async AddComment(i: number) {
     if (!this.CommentsGroup.valid) return;
 
@@ -159,6 +155,7 @@ export class HomeComponent implements OnInit {
 
       for (let post of Posts) {
         if (post.ImageId && post.UserId && post.PostId) {
+          this.imageLoaded[post.PostId] = false;
           const Image = await firstValueFrom(
             this.cloudinary_service.findImage(post.ImageId),
           );
@@ -198,6 +195,8 @@ export class HomeComponent implements OnInit {
             );
 
             this.Posts.push(Post);
+
+            this.imageLoaded[post.PostId] = true;
             continue;
           }
 
@@ -215,6 +214,8 @@ export class HomeComponent implements OnInit {
           );
 
           this.Posts.push(Post);
+
+          this.imageLoaded[post.PostId] = true;
         }
       }
     } catch (err) {

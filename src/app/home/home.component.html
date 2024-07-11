@@ -26,22 +26,19 @@
           {{ post.Post.CreatedDate }}
         </p>
       </div>
-      <div>
+      <div
+        *ngIf="!imageLoaded[post.Post.PostId]"
+        class="w-full h-full bg-zinc-900 flex items-center justify-center"
+      >
         <div
-          *ngIf="!imageLoaded[i]"
-          class="w-full h-full bg-zinc-900 flex items-center justify-center"
-        >
-          <div
-            class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12"
-          ></div>
-        </div>
-        <img
-          [src]="post.ImageUrl"
-          class="object-contain"
-          (load)="onImageLoad(i)"
-          *ngIf="imageLoaded[i]"
-        />
+          class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12"
+        ></div>
       </div>
+      <img
+        [src]="post.ImageUrl"
+        class="object-contain"
+        *ngIf="imageLoaded[post.Post.PostId]"
+      />
 
       <div class="flex gap-2 mt-1">
         <button (click)="Like(i)">
