@@ -19,6 +19,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { MessagesComponent } from './messages/messages.component';
 import { OverlayComponent } from './overlay/overlay.component';
 import { CreatePostComponent } from './create-post/create-post.component';
+import { Overlay2Component } from './overlay2/overlay2.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { CreatePostComponent } from './create-post/create-post.component';
     MessagesComponent,
     OverlayComponent,
     CreatePostComponent,
+    Overlay2Component,
   ],
   imports: [
     BrowserModule,

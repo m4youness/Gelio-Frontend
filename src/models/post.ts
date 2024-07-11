@@ -27,7 +27,6 @@ export class PostDetails {
   ProfileUrl: string | null;
   IsLiked: boolean;
   Likes: number;
-  Loaded: boolean = false;
 
   constructor(
     post: Post,
@@ -36,7 +35,6 @@ export class PostDetails {
     profileUrl: string | null = null,
     isLiked: boolean = false,
     likes: number = 0,
-    loaded: boolean = false,
   ) {
     this.Post = post;
     this.User = user;
@@ -44,6 +42,5 @@ export class PostDetails {
     this.ProfileUrl = profileUrl;
     this.IsLiked = isLiked;
     this.Likes = likes;
-    this.Loaded = loaded;
   }
 }

@@ -18,6 +18,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 })
 export class HomeComponent implements OnInit {
   pageName: string = 'home';
+  Loaded: boolean = false;
 
   constructor(
     private user_service: UserService,
@@ -189,7 +190,6 @@ export class HomeComponent implements OnInit {
               ProfileUrl,
               IsLiked,
               Likes,
-              true,
             );
 
             this.Posts.push(Post);
@@ -208,11 +208,11 @@ export class HomeComponent implements OnInit {
             Profile.Url,
             IsLiked,
             Likes,
-            true,
           );
 
           this.Posts.push(Post);
         }
+        this.Loaded = true;
       }
     } catch (err) {
       console.log(err);
