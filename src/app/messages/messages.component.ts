@@ -58,7 +58,7 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
 
   ConnectToSockets() {
     const Socket = new WebSocket(
-      'ws://glistening-respect-production.up.railway.app/ws',
+      'wss://glistening-respect-production.up.railway.app/ws',
     );
     console.log(Socket);
 
