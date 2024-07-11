@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { Message } from '../../models/Message';
 import { CloudinaryService } from '../../services/cloudinary.service';
 import { DateUtilService } from '../../services/date-util.service';
+import { ApiUrl } from '../../enviroment/ApiUrl';
 
 @Component({
   selector: 'app-messages',
@@ -56,7 +57,9 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
   }
 
   ConnectToSockets() {
-    const Socket = new WebSocket('ws://localhost:3000/ws');
+    const Socket = new WebSocket(
+      'ws://glistening-respect-production.up.railway.app/ws',
+    );
     console.log(Socket);
 
     Socket.addEventListener('open', () => {
