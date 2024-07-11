@@ -122,17 +122,15 @@ export class HomeComponent implements OnInit {
       if (!PostId || !this.CurrentUserId) return;
 
       if (this.Posts[i].IsLiked) {
+        this.Posts[i].Likes++;
         await firstValueFrom(
           this.post_likes_service.AddLike(PostId, this.CurrentUserId),
         );
-
-        this.Posts[i].Likes++;
       } else {
+        this.Posts[i].Likes--;
         await firstValueFrom(
           this.post_likes_service.RemoveLike(PostId, this.CurrentUserId),
         );
-
-        this.Posts[i].Likes--;
       }
 
       this.Posts[i].Likes = await firstValueFrom(
