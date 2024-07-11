@@ -212,8 +212,9 @@ export class HomeComponent implements OnInit {
 
           this.Posts.push(Post);
         }
-        this.Loaded = true;
       }
+
+      this.Loaded = true;
     } catch (err) {
       console.log(err);
     }
