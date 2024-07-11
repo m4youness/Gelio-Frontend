@@ -154,67 +154,60 @@ export class HomeComponent implements OnInit {
         this.post_service.GetPosts(this.CurrentUserId),
       );
 
-      for (let post of Posts) {
-        if (post.ImageId && post.UserId && post.PostId) {
-          const Image = await firstValueFrom(
-            this.cloudinary_service.findImage(post.ImageId),
-          );
-          const user = await firstValueFrom(
-            this.user_service.GetUser(post.UserId),
-          );
-          if (!user.ProfileImageId) {
-            return;
+      const postDetailsPromises = Posts.map(async (post) => {
+        if (post.ImageId && post.UserId && post.PostId && this.CurrentUserId) {
+          const [image, user, isLiked, likes] = await Promise.all([
+            firstValueFrom(this.cloudinary_service.findImage(post.ImageId)),
+            firstValueFrom(this.user_service.GetUser(post.UserId)),
+            firstValueFrom(
+              this.post_likes_service.IsPostLiked(
+                post.PostId,
+                this.CurrentUserId,
+              ),
+            ),
+            firstValueFrom(
+              this.post_likes_service.GetAmountOfLikes(post.PostId),
+            ),
+          ]);
+
+          if (!user.ProfileImageId || !post.CreatedDate) {
+            return null; // Skip this post if user profile image or created date is missing
           }
 
-          if (!post.CreatedDate) return;
           const date = this.date_util_service.getRelativeTime(post.CreatedDate);
-
           post.CreatedDate = date;
 
-          const IsLiked = await firstValueFrom(
-            this.post_likes_service.IsPostLiked(
-              post.PostId,
-              this.CurrentUserId,
-            ),
-          );
-          const Likes = await firstValueFrom(
-            this.post_likes_service.GetAmountOfLikes(post.PostId),
-          );
+          let profileUrl = '';
 
-          if (user.ProfileImageId == 2) {
-            const ProfileUrl =
+          if (user.ProfileImageId === 2) {
+            profileUrl =
               'https://res.cloudinary.com/geliobackend/image/upload/v1720033720/profile-icon-design-free-vector.jpg.jpg';
-
-            const Post = new PostDetails(
-              post,
-              user,
-              Image.Url,
-              ProfileUrl,
-              IsLiked,
-              Likes,
+          } else {
+            const profileImage = await firstValueFrom(
+              this.cloudinary_service.findImage(user.ProfileImageId),
             );
-
-            this.Posts.push(Post);
-
-            continue;
+            if (profileImage.Url) {
+              profileUrl = profileImage.Url;
+            }
           }
 
-          const Profile = await firstValueFrom(
-            this.cloudinary_service.findImage(user.ProfileImageId),
-          );
-
-          const Post = new PostDetails(
+          return new PostDetails(
             post,
             user,
-            Image.Url,
-            Profile.Url,
-            IsLiked,
-            Likes,
+            image.Url,
+            profileUrl,
+            isLiked,
+            likes,
           );
-
-          this.Posts.push(Post);
         }
-      }
+        return null; // Skip this post if ImageId, UserId, or PostId is missing
+      });
+
+      // Wait for all post details to be fetched and filtered
+      const postDetails = await Promise.all(postDetailsPromises);
+      this.Posts = postDetails.filter(
+        (detail): detail is PostDetails => detail !== null,
+      );
 
       this.Loaded = true;
     } catch (err) {
