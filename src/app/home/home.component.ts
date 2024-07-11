@@ -18,8 +18,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 })
 export class HomeComponent implements OnInit {
   pageName: string = 'home';
-  PlaceHolderImage: string =
-    'https://res.cloudinary.com/geliobackend/image/upload/v1720033720/profile-icon-design-free-vector.jpg.jpg';
+
+  imageLoaded: boolean[] = [];
 
   constructor(
     private user_service: UserService,
@@ -47,6 +47,10 @@ export class HomeComponent implements OnInit {
 
   CloseComments() {
     this.CommentsOn = false;
+  }
+
+  onImageLoad(index: number): void {
+    this.imageLoaded[index] = true;
   }
 
   async AddComment(i: number) {
