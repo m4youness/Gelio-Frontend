@@ -26,8 +26,7 @@
           {{ post.Post.CreatedDate }}
         </p>
       </div>
-
-      <div class="relative">
+      <div>
         <div
           *ngIf="!imageLoaded[i]"
           class="w-full h-full bg-zinc-900 flex items-center justify-center"
@@ -40,9 +39,10 @@
           [src]="post.ImageUrl"
           class="object-contain"
           (load)="onImageLoad(i)"
-          [class.hidden]="!imageLoaded[i]"
+          *ngIf="imageLoaded[i]"
         />
       </div>
+
       <div class="flex gap-2 mt-1">
         <button (click)="Like(i)">
           <svg
