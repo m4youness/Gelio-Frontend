@@ -11,29 +11,33 @@
     </div>
     <div class="px-10 flex py-3 border-b border-gray-800">
       <p class="text-white font-bold w-28">Username</p>
-      <p class="text-gray-400">{{ CurrentUser.Username }}</p>
+      <p class="text-gray-400">{{ CurrentUser.Username || "loading..." }}</p>
     </div>
     <div class="px-10 flex py-3 border-b border-gray-800">
       <p class="text-white font-bold w-28">Full name</p>
       <p class="text-gray-400">
-        {{ CurrentPerson.FirstName + " " + CurrentPerson.LastName }}
+        {{
+          CurrentPerson.FirstName + " " + CurrentPerson.LastName || "loading..."
+        }}
       </p>
     </div>
     <div class="px-10 flex py-3 border-b border-gray-800">
       <p class="text-white font-bold w-28">Email</p>
-      <p class="text-gray-400">{{ CurrentPerson.Email }}</p>
+      <p class="text-gray-400">{{ CurrentPerson.Email || "loading..." }}</p>
     </div>
     <div class="px-10 flex py-3 border-b border-gray-800">
       <p class="text-white font-bold w-28">Phone</p>
-      <p class="text-gray-400">{{ CurrentPerson.PhoneNumber }}</p>
+      <p class="text-gray-400">
+        {{ CurrentPerson.PhoneNumber || "loading..." }}
+      </p>
     </div>
     <div class="px-10 flex py-3 border-b border-gray-800">
       <p class="text-white font-bold w-28">Age</p>
-      <p class="text-gray-400">{{ this.Age }}</p>
+      <p class="text-gray-400">{{ this.Age || "loading..." }}</p>
     </div>
     <div class="px-10 flex py-3 border-b border-gray-800">
       <p class="text-white font-bold w-28">Country</p>
-      <p class="text-gray-400">{{ this.Country }}</p>
+      <p class="text-gray-400">{{ this.Country || "loading..." }}</p>
     </div>
     <div class="px-10 flex py-3">
       <p class="text-white font-bold w-28">Gender</p>

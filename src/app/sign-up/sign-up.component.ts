@@ -35,7 +35,7 @@ export class SignUpComponent implements OnInit {
       dateofbirth: new FormControl('', [Validators.required]),
       username: new FormControl('', [Validators.required]),
       password: new FormControl('', [Validators.required]),
-      CountryName: new FormControl('', [Validators.required]),
+      CountryName: new FormControl(''),
     });
   }
 
@@ -46,11 +46,11 @@ export class SignUpComponent implements OnInit {
   currentDate: string = formatDate(new Date(), 'yyyy-MM-dd', 'en-US');
   Countries: Country[] = [];
 
-  person: Person = { GenderID: 0 };
+  person: Person = { GenderID: 0, CountryID: 1 };
   user: User = {
     CreatedDate: this.currentDate,
     IsActive: true,
-    ProfileImageId: 1,
+    ProfileImageId: 2,
   };
 
   MakeMale() {

@@ -217,7 +217,7 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
           return;
         }
 
-        if (user.ProfileImageId == 1) {
+        if (user.ProfileImageId == 2) {
           const ProfileUrl =
             'https://res.cloudinary.com/geliobackend/image/upload/v1720033720/profile-icon-design-free-vector.jpg.jpg';
 

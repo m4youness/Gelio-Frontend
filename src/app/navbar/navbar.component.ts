@@ -57,7 +57,7 @@ export class NavbarComponent implements OnInit {
         return;
       }
 
-      if (this.CurrentUser.ProfileImageId == 1) {
+      if (this.CurrentUser.ProfileImageId == 2) {
         const ProfileUrl =
           'https://res.cloudinary.com/geliobackend/image/upload/v1720033720/profile-icon-design-free-vector.jpg.jpg';
 

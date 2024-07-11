@@ -1,1 +1,1 @@
-export const ApiUrl = 'http://localhost:3000/';
+export const ApiUrl = 'https://glistening-respect-production.up.railway.app/';

@@ -83,7 +83,7 @@ export class HomeComponent implements OnInit {
           return;
         }
 
-        if (User.ProfileImageId == 1) {
+        if (User.ProfileImageId == 2) {
           const userWithProfileImage = new UserWithProfileImage(
             User,
             'https://res.cloudinary.com/geliobackend/image/upload/v1720033720/profile-icon-design-free-vector.jpg.jpg',
@@ -180,7 +180,7 @@ export class HomeComponent implements OnInit {
             this.post_likes_service.GetAmountOfLikes(post.PostId),
           );
 
-          if (user.ProfileImageId == 1) {
+          if (user.ProfileImageId == 2) {
             const ProfileUrl =
               'https://res.cloudinary.com/geliobackend/image/upload/v1720033720/profile-icon-design-free-vector.jpg.jpg';
 
