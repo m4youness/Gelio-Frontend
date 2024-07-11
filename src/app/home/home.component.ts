@@ -19,8 +19,6 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 export class HomeComponent implements OnInit {
   pageName: string = 'home';
 
-  imageLoaded: boolean[] = [];
-
   constructor(
     private user_service: UserService,
     private post_service: PostService,
@@ -155,7 +153,6 @@ export class HomeComponent implements OnInit {
 
       for (let post of Posts) {
         if (post.ImageId && post.UserId && post.PostId) {
-          this.imageLoaded[post.PostId] = false;
           const Image = await firstValueFrom(
             this.cloudinary_service.findImage(post.ImageId),
           );
@@ -192,11 +189,11 @@ export class HomeComponent implements OnInit {
               ProfileUrl,
               IsLiked,
               Likes,
+              true,
             );
 
             this.Posts.push(Post);
 
-            this.imageLoaded[post.PostId] = true;
             continue;
           }
 
@@ -211,11 +208,10 @@ export class HomeComponent implements OnInit {
             Profile.Url,
             IsLiked,
             Likes,
+            true,
           );
 
           this.Posts.push(Post);
-
-          this.imageLoaded[post.PostId] = true;
         }
       }
     } catch (err) {
