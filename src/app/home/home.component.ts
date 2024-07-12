@@ -81,6 +81,8 @@ export class HomeComponent implements OnInit {
         this.CommentsLoaded = true;
         this.NoComments = true;
         return;
+      } else {
+        this.NoComments = false;
       }
 
       const commentDetailsPromises = Comments.map(async (Comment) => {
