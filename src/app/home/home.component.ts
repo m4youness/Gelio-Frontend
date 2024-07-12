@@ -68,6 +68,7 @@ export class HomeComponent implements OnInit {
 
   async OpenComments(i: number) {
     this.CommentsOn = true;
+    this.CommentsLoaded = false;
     this.Comments = [];
     try {
       const Comments = await firstValueFrom(

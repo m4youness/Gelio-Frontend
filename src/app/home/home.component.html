@@ -104,7 +104,10 @@
         Comments
       </h2>
 
-      <div class="spinner p-10" *ngIf="!CommentsLoaded"></div>
+      <div
+        class="spinner p-10 flex justify-center"
+        *ngIf="!CommentsLoaded"
+      ></div>
 
       <!-- Scrollable comments section -->
       <div class="overflow-y-auto max-h-96" *ngIf="CommentsLoaded">
