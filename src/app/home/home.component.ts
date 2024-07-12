@@ -76,9 +76,11 @@ export class HomeComponent implements OnInit {
         this.comments_service.GetComments(this.Posts[i].Post.PostId),
       );
 
-      if (Comments.length == 0) {
+      if (Comments.length === 0) {
+        console.log(Comments.length);
         this.CommentsLoaded = true;
         this.NoComments = true;
+        return;
       }
 
       const commentDetailsPromises = Comments.map(async (Comment) => {
@@ -160,6 +162,12 @@ export class HomeComponent implements OnInit {
       const Posts: Post[] = await firstValueFrom(
         this.post_service.GetPosts(this.CurrentUserId),
       );
+
+      if (Posts.length === 0) {
+        console.log(Posts.length);
+        this.PostsLoaded = true;
+        return;
+      }
 
       const postDetailsPromises = Posts.map(async (post) => {
         if (post.ImageId && post.UserId && post.PostId && this.CurrentUserId) {
