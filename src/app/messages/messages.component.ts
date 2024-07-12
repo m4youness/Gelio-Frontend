@@ -9,7 +9,6 @@ import { Router } from '@angular/router';
 import { Message } from '../../models/Message';
 import { CloudinaryService } from '../../services/cloudinary.service';
 import { DateUtilService } from '../../services/date-util.service';
-import { ApiUrl } from '../../enviroment/ApiUrl';
 
 @Component({
   selector: 'app-messages',
@@ -188,6 +187,8 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
       this.socket.close();
       this.socket = null;
     }
+
+    this.ConnectToSockets();
     this.MessageModeOn = true;
 
     this.CurrentReceiverId = ReceiverId;
@@ -198,8 +199,6 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
       this.Messages = await firstValueFrom(
         this.message_service.LoadMessages(this.CurrentUserId, ReceiverId),
       );
-
-      this.ConnectToSockets();
     } catch (err) {
       console.log(err);
     }
@@ -209,33 +208,35 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
     this.Users = [];
     try {
       const user_id = await firstValueFrom(this.user_service.CurrentUserId());
-
       this.CurrentUserId = user_id;
+
       const Users: User[] = await firstValueFrom(
         this.message_service.LoadContacts(user_id),
       );
 
-      for (let user of Users) {
+      const userDetailsPromises = Users.map(async (user) => {
         if (!user.ProfileImageId) {
-          return;
+          return null;
         }
-
+        var ProfileUrl = '';
         if (user.ProfileImageId == 2) {
-          const ProfileUrl =
+          ProfileUrl =
             'https://res.cloudinary.com/geliobackend/image/upload/v1720033720/profile-icon-design-free-vector.jpg.jpg';
-
-          const UserDetails = new UserWithProfileImage(user, ProfileUrl);
-          this.Users.push(UserDetails);
-          continue;
+        } else {
+          const Image = await firstValueFrom(
+            this.cloudinary_service.findImage(user.ProfileImageId),
+          );
+          ProfileUrl = Image.Url || '';
         }
-        const Image = await firstValueFrom(
-          this.cloudinary_service.findImage(user.ProfileImageId),
-        );
 
-        const UserDetails = new UserWithProfileImage(user, Image.Url);
+        return new UserWithProfileImage(user, ProfileUrl);
+      });
 
-        this.Users.push(UserDetails);
-      }
+      const UsersDetails = await Promise.all(userDetailsPromises);
+
+      this.Users = UsersDetails.filter(
+        (detail): detail is UserWithProfileImage => detail !== null,
+      );
     } catch (err) {
       console.log(err);
     }

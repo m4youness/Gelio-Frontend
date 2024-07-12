@@ -20,6 +20,7 @@ export class HomeComponent implements OnInit {
   pageName: string = 'home';
   PostsLoaded: boolean = false;
   CommentsLoaded: boolean = false;
+  NoComments: boolean = false;
 
   constructor(
     private user_service: UserService,
@@ -74,6 +75,11 @@ export class HomeComponent implements OnInit {
       const Comments = await firstValueFrom(
         this.comments_service.GetComments(this.Posts[i].Post.PostId),
       );
+
+      if (Comments.length == 0) {
+        this.CommentsLoaded = true;
+        this.NoComments = true;
+      }
 
       const commentDetailsPromises = Comments.map(async (Comment) => {
         if (!Comment.UserId) return null;
