@@ -11,8 +11,8 @@ export class PostService {
   constructor(private http: HttpClient) {}
   private apiUrl = ApiUrl;
 
-  GetPosts(UserId: number): Observable<Post[]> {
-    return this.http.get<Post[]>(this.apiUrl + `Posts/${UserId}`, {
+  GetPosts(UserId: number, Offset : number, Limit : number): Observable<Post[]> {
+    return this.http.get<Post[]>(this.apiUrl + `Posts/${UserId}/${Offset}/${Limit}`, {
       withCredentials: true,
     });
   }

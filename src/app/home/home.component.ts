@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { Post, PostDetails } from '../../models/post';
 import { UserService } from '../../services/user.service';
 import { PostService } from '../../services/post.service';
@@ -18,9 +18,12 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 })
 export class HomeComponent implements OnInit {
   pageName: string = 'home';
-  PostsLoaded: boolean = false;
+  PostsLoaded: boolean = true;
   CommentsLoaded: boolean = false;
   NoComments: boolean = false;
+
+  Limit: number = 2;
+  Offset: number = 0;
 
   constructor(
     private user_service: UserService,
@@ -162,8 +165,10 @@ export class HomeComponent implements OnInit {
         this.user_service.CurrentUserId(),
       );
       const Posts: Post[] = await firstValueFrom(
-        this.post_service.GetPosts(this.CurrentUserId),
+        this.post_service.GetPosts(this.CurrentUserId, this.Offset, this.Limit),
       );
+
+      this.Offset += this.Limit
 
       if (!Posts) {
         this.PostsLoaded = true;
@@ -216,7 +221,7 @@ export class HomeComponent implements OnInit {
             likes,
           );
         }
-        return null; // Skip this post if ImageId, UserId, or PostId is missing
+        return null; 
       });
 
       // Wait for all post details to be fetched and filtered
@@ -228,6 +233,13 @@ export class HomeComponent implements OnInit {
       this.PostsLoaded = true;
     } catch (err) {
       console.log(err);
+    }
+  }
+
+  @HostListener('window:scroll', ['$event'])
+  onScroll(): void {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 2) {
+      this.GetPosts();
     }
   }
 }
