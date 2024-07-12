@@ -18,7 +18,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 })
 export class HomeComponent implements OnInit {
   pageName: string = 'home';
-  Loaded: boolean = false;
+  PostsLoaded: boolean = false;
+  CommentsLoaded: boolean = false;
 
   constructor(
     private user_service: UserService,
@@ -106,6 +107,8 @@ export class HomeComponent implements OnInit {
       this.Comments = commentDetails.filter(
         (detail): detail is CommentDetails => detail !== null,
       );
+
+      this.CommentsLoaded = true;
     } catch (err) {
       console.log(err);
     }
@@ -206,7 +209,7 @@ export class HomeComponent implements OnInit {
         (detail): detail is PostDetails => detail !== null,
       );
 
-      this.Loaded = true;
+      this.PostsLoaded = true;
     } catch (err) {
       console.log(err);
     }
