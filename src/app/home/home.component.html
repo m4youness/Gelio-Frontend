@@ -1,7 +1,7 @@
 <app-navbar [PageName]="pageName" />
 
-<app-overlay2 [showOverlay]="!PostsLoaded"></app-overlay2>
-<div class="h-screen flex flex-col overflow-y-scroll bg-black">
+<app-overlay2 [showOverlay]="loading && Offset == 0"></app-overlay2>
+<div class="h-screen flex flex-col overflow-y-scroll bg-black" *ngIf="!NoPosts">
   <div
     *ngFor="let post of Posts; let i = index"
     class="text-white flex w-full justify-center px-4 mt-12"
@@ -112,10 +112,10 @@
       </div>
 
       <div
-        class="w-full flex justify-center h-full items-center mt-1"
+        class="w-full flex justify-center h-full items-center mt-3 text-xl"
         *ngIf="NoComments"
       >
-        <p class="text-white font-semibold">No comments available</p>
+        <p class="text-white">No comments available</p>
       </div>
       <!-- Scrollable comments section -->
       <div class="overflow-y-auto max-h-96" *ngIf="CommentsLoaded">
@@ -140,4 +140,7 @@
       </button>
     </div>
   </div>
+</div>
+<div *ngIf="NoPosts" class="h-[89vh] w-full text-white flex justify-center items-center flex-col">
+  <h1 class="text-xl">No Posts available</h1>
 </div>

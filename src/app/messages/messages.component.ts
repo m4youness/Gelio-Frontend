@@ -36,6 +36,8 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
 
   socket?: WebSocket | null;
 
+  ContactsLoading : boolean = false;
+
   MessageModeOn: boolean = false;
   ContactMode: boolean = false;
 
@@ -207,6 +209,7 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
   async LoadContacts() {
     this.Users = [];
     try {
+      this.ContactsLoading = true
       const user_id = await firstValueFrom(this.user_service.CurrentUserId());
       this.CurrentUserId = user_id;
 
@@ -237,6 +240,8 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
       this.Users = UsersDetails.filter(
         (detail): detail is UserWithProfileImage => detail !== null,
       );
+
+      this.ContactsLoading = false;
     } catch (err) {
       console.log(err);
     }

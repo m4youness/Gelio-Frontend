@@ -18,12 +18,13 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 })
 export class HomeComponent implements OnInit {
   pageName: string = 'home';
-  PostsLoaded: boolean = true;
   CommentsLoaded: boolean = false;
   NoComments: boolean = false;
+  NoPosts : boolean = false
 
   Limit: number = 2;
   Offset: number = 0;
+  loading: boolean = false; // Add a loading flag
 
   constructor(
     private user_service: UserService,
@@ -39,6 +40,7 @@ export class HomeComponent implements OnInit {
         Validators.maxLength(500),
       ]),
     });
+   
   }
 
   Posts: PostDetails[] = [];
@@ -64,7 +66,7 @@ export class HomeComponent implements OnInit {
         this.date_util_service.getCurrentDateTimeString(),
       );
       this.NoComments = false;
-      await firstValueFrom(this.comments_service.AddComment(comment));
+      firstValueFrom(this.comments_service.AddComment(comment));
       this.CommentsGroup.controls['comment'].setValue('');
     } catch (err) {
       console.log(err);
@@ -160,6 +162,10 @@ export class HomeComponent implements OnInit {
   }
 
   async GetPosts() {
+    if (this.loading){
+      return;
+    } 
+    this.loading = true;
     try {
       this.CurrentUserId = await firstValueFrom(
         this.user_service.CurrentUserId(),
@@ -168,12 +174,17 @@ export class HomeComponent implements OnInit {
         this.post_service.GetPosts(this.CurrentUserId, this.Offset, this.Limit),
       );
 
-      this.Offset += this.Limit
-
       if (!Posts) {
-        this.PostsLoaded = true;
+        if (this.Offset == 0) {
+          this.NoPosts = true
+        }
+        else {
+          this.NoPosts = false
+        }
+        this.loading = false; 
         return;
       }
+
 
       const postDetailsPromises = Posts.map(async (post) => {
         if (post.ImageId && post.UserId && post.PostId && this.CurrentUserId) {
@@ -192,7 +203,7 @@ export class HomeComponent implements OnInit {
           ]);
 
           if (!user.ProfileImageId || !post.CreatedDate) {
-            return null; // Skip this post if user profile image or created date is missing
+            return null; 
           }
 
           const date = this.date_util_service.getRelativeTime(post.CreatedDate);
@@ -226,13 +237,15 @@ export class HomeComponent implements OnInit {
 
       // Wait for all post details to be fetched and filtered
       const postDetails = await Promise.all(postDetailsPromises);
-      this.Posts = postDetails.filter(
+      this.Posts = this.Posts.concat(postDetails.filter(
         (detail): detail is PostDetails => detail !== null,
-      );
+      ));
 
-      this.PostsLoaded = true;
+      this.Offset += this.Limit; // Move the offset increment here
     } catch (err) {
       console.log(err);
+    } finally {
+      this.loading = false; // Ensure loading flag is reset
     }
   }
 

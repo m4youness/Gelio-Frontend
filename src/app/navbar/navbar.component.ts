@@ -24,6 +24,7 @@ export class NavbarComponent implements OnInit {
   CurrentUser: User = {};
   ProfilePicture: Image = {};
 
+
   NavigationPopup: boolean = false;
 
   OpenPopup() {
@@ -56,6 +57,7 @@ export class NavbarComponent implements OnInit {
       if (!this.CurrentUser.ProfileImageId) {
         return;
       }
+
 
       if (this.CurrentUser.ProfileImageId == 2) {
         const ProfileUrl =

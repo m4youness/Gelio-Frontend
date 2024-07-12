@@ -1,6 +1,6 @@
 <app-navbar [PageName]="pageName" />
 
-<div class="h-[93vh] bg-black flex">
+<div class="md:h-[93vh] h-[91vh] bg-black flex">
   <div
     class="md:w-2/5 md:min-w-80 md:border-r h-full w-full md:border-gray-800 overflow-y-scroll"
     [ngClass]="{ 'hidden lg:block': MessageModeOn }"
@@ -23,6 +23,12 @@
     >
       <img [src]="user.Url" class="size-9 rounded-full" />
       <p class="mt-1">{{ user.User.Username || "loading..." }}</p>
+    </div>
+    <div
+      *ngIf="ContactsLoading"
+      class="w-full h-4/5 flex justify-center items-center"
+    >
+      <div class="spinner p-5"></div>
     </div>
     <form *ngIf="ContactMode" [formGroup]="ContactForm" (submit)="AddContact()">
       <div class="relative flex items-center w-full">
@@ -91,7 +97,7 @@
       </div>
       <div class="overflow-y-scroll w-full flex flex-col" #messageContainer>
         <div
-          class="text-white p-2 rounded-3xl px-5 mx-12 my-3 max-w-[320px] w-fit break-all"
+          class="text-white p-2 rounded-3xl px-5 mx-5 md:mx-12 my-3 max-w-[320px] w-fit break-all"
           *ngFor="let msg of Messages"
           [ngClass]="getMessageClass(msg.SenderId)"
         >
