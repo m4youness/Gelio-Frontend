@@ -60,6 +60,7 @@ export class HomeComponent implements OnInit {
         this.CommentsGroup.controls['comment'].value,
         this.date_util_service.getCurrentDateTimeString(),
       );
+      this.NoComments = false;
       await firstValueFrom(this.comments_service.AddComment(comment));
       this.CommentsGroup.controls['comment'].setValue('');
     } catch (err) {
