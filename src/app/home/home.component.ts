@@ -73,42 +73,39 @@ export class HomeComponent implements OnInit {
         this.comments_service.GetComments(this.Posts[i].Post.PostId),
       );
 
-      for (let Comment of Comments) {
-        if (!Comment.UserId) return;
-        const User = await firstValueFrom(
+      const commentDetailsPromises = Comments.map(async (Comment) => {
+        if (!Comment.UserId) return null;
+
+        const user = await firstValueFrom(
           this.user_service.GetUser(Comment.UserId),
         );
-        if (!User.ProfileImageId) {
-          return;
+        if (!user.ProfileImageId) return null;
+
+        let userProfile = '';
+
+        if (user.ProfileImageId === 2) {
+          userProfile =
+            'https://res.cloudinary.com/geliobackend/image/upload/v1720033720/profile-icon-design-free-vector.jpg.jpg';
+        } else {
+          const image = await firstValueFrom(
+            this.cloudinary_service.findImage(user.ProfileImageId),
+          );
+          userProfile = image?.Url || '';
         }
 
-        if (User.ProfileImageId == 2) {
-          const userWithProfileImage = new UserWithProfileImage(
-            User,
-            'https://res.cloudinary.com/geliobackend/image/upload/v1720033720/profile-icon-design-free-vector.jpg.jpg',
-          );
-
-          const commentDetails = new CommentDetails(
-            Comment,
-            userWithProfileImage,
-          );
-
-          this.Comments.push(commentDetails);
-          return;
-        }
-
-        const Image = await firstValueFrom(
-          this.cloudinary_service.findImage(User.ProfileImageId),
+        const userWithProfileImage = new UserWithProfileImage(
+          user,
+          userProfile,
         );
+        return new CommentDetails(Comment, userWithProfileImage);
+      });
 
-        const userWithProfileImage = new UserWithProfileImage(User, Image.Url);
+      const commentDetails = await Promise.all(commentDetailsPromises);
 
-        const commentDetails = new CommentDetails(
-          Comment,
-          userWithProfileImage,
-        );
-        this.Comments.push(commentDetails);
-      }
+      // Filter out null values and assign to this.Comments
+      this.Comments = commentDetails.filter(
+        (detail): detail is CommentDetails => detail !== null,
+      );
     } catch (err) {
       console.log(err);
     }
