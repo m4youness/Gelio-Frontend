@@ -106,13 +106,17 @@
 
       <div
         class="flex justify-center h-full w-full items-center"
-        *ngIf="!CommentsLoaded"
+        *ngIf="!CommentsLoaded && !NoComments"
       >
-        <div class="spinner p-6"></div>
-
-        <p *ngIf="NoComments" class="text-white">No comments available</p>
+        <div class="spinner p-6 my-12"></div>
       </div>
 
+      <div
+        class="w-full flex justify-center h-full items-center"
+        *ngIf="NoComments"
+      >
+        <p class="text-white">No comments available</p>
+      </div>
       <!-- Scrollable comments section -->
       <div class="overflow-y-auto max-h-96" *ngIf="CommentsLoaded">
         <!-- Adjust max-h-96 to your desired maximum height -->
