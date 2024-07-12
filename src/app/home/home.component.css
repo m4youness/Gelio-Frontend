@@ -11,7 +11,7 @@
   border: 4px solid rgba(255, 255, 255, 0.3); /* Example border style */
   border-top-color: #ffffff; /* Example border color */
   border-radius: 50%;
-  width: 34px; /* Adjust size as needed */
-  height: 34px; /* Adjust size as needed */
+  width: 16px; /* Adjust size as needed */
+  height: 16px; /* Adjust size as needed */
   animation: spin 1s linear infinite;
 }
