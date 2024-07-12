@@ -76,8 +76,7 @@ export class HomeComponent implements OnInit {
         this.comments_service.GetComments(this.Posts[i].Post.PostId),
       );
 
-      if (Comments.length === 0) {
-        console.log(Comments.length);
+      if (!Comments) {
         this.CommentsLoaded = true;
         this.NoComments = true;
         return;
@@ -163,8 +162,7 @@ export class HomeComponent implements OnInit {
         this.post_service.GetPosts(this.CurrentUserId),
       );
 
-      if (Posts.length === 0) {
-        console.log(Posts.length);
+      if (!Posts) {
         this.PostsLoaded = true;
         return;
       }
