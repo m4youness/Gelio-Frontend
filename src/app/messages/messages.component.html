@@ -30,6 +30,13 @@
     >
       <div class="spinner p-5"></div>
     </div>
+
+    <div
+      *ngIf="NoContacts"
+      class="w-full h-4/5 flex justify-center items-center"
+    >
+      <p>No contacts added</p>
+    </div>
     <form *ngIf="ContactMode" [formGroup]="ContactForm" (submit)="AddContact()">
       <div class="relative flex items-center w-full">
         <input
