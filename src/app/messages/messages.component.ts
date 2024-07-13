@@ -161,7 +161,8 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
     try {
       if (!this.CurrentUserId || !this.CurrentReceiverId) return;
       const msg = this.MessageForm.controls['Message'].value;
-      await firstValueFrom(
+
+      firstValueFrom(
         this.message_service.SendMessage(
           this.CurrentUserId,
           this.CurrentReceiverId,

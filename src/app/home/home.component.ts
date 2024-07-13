@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Post, PostDetails } from '../../models/post';
 import { UserService } from '../../services/user.service';
 import { PostService } from '../../services/post.service';
@@ -20,11 +20,11 @@ export class HomeComponent implements OnInit {
   pageName: string = 'home';
   CommentsLoaded: boolean = false;
   NoComments: boolean = false;
-  NoPosts : boolean = false
+  NoPosts: boolean = false;
 
   Limit: number = 2;
   Offset: number = 0;
-  loading: boolean = false; // Add a loading flag
+  loading: boolean = false;
 
   constructor(
     private user_service: UserService,
@@ -40,7 +40,6 @@ export class HomeComponent implements OnInit {
         Validators.maxLength(500),
       ]),
     });
-   
   }
 
   Posts: PostDetails[] = [];
@@ -157,14 +156,10 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  ngOnInit() {
-    this.GetPosts();
-  }
-
   async GetPosts() {
-    if (this.loading){
+    if (this.loading) {
       return;
-    } 
+    }
     this.loading = true;
     try {
       this.CurrentUserId = await firstValueFrom(
@@ -176,15 +171,13 @@ export class HomeComponent implements OnInit {
 
       if (!Posts) {
         if (this.Offset == 0) {
-          this.NoPosts = true
+          this.NoPosts = true;
+        } else {
+          this.NoPosts = false;
         }
-        else {
-          this.NoPosts = false
-        }
-        this.loading = false; 
+        this.loading = false;
         return;
       }
-
 
       const postDetailsPromises = Posts.map(async (post) => {
         if (post.ImageId && post.UserId && post.PostId && this.CurrentUserId) {
@@ -203,7 +196,7 @@ export class HomeComponent implements OnInit {
           ]);
 
           if (!user.ProfileImageId || !post.CreatedDate) {
-            return null; 
+            return null;
           }
 
           const date = this.date_util_service.getRelativeTime(post.CreatedDate);
@@ -232,14 +225,14 @@ export class HomeComponent implements OnInit {
             likes,
           );
         }
-        return null; 
+        return null;
       });
 
       // Wait for all post details to be fetched and filtered
       const postDetails = await Promise.all(postDetailsPromises);
-      this.Posts = this.Posts.concat(postDetails.filter(
-        (detail): detail is PostDetails => detail !== null,
-      ));
+      this.Posts = this.Posts.concat(
+        postDetails.filter((detail): detail is PostDetails => detail !== null),
+      );
 
       this.Offset += this.Limit; // Move the offset increment here
     } catch (err) {
@@ -249,10 +242,28 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  @HostListener('window:scroll', ['$event'])
-  onScroll(): void {
-    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 2) {
-      this.GetPosts();
+  observer?: IntersectionObserver | null;
+
+  @ViewChild('scrollAnchor', { static: false }) scrollAnchor!: ElementRef;
+
+  ngOnInit() {
+    this.GetPosts();
+
+    this.observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          this.GetPosts();
+        }
+      });
+    });
+  }
+
+  ngAfterViewInit() {
+    if (!this.observer) {
+      return;
+    }
+    if (this.scrollAnchor) {
+      this.observer.observe(this.scrollAnchor.nativeElement);
     }
   }
 }
