@@ -9,20 +9,20 @@
         [(ngModel)]="username"
         formControlName="username"
         [ngClass]="{
-          'border-1 border-rose-500':
+          'border-1 border-rose-600':
             SignInForm.get('username')?.invalid &&
             SignInForm.get('username')?.touched
         }"
-        class="rounded-3xl bg-black border-2 border-white p-1 px-4 text-white"
+        class="rounded-3xl bg-black border-2 border-gray-300 p-1 px-4 text-white"
       />
 
       <input
-        class="rounded-3xl bg-black border-2 border-white p-1 px-4 text-white"
+        class="rounded-3xl bg-black border-2 border-gray-300 p-1 px-4 text-white"
         placeholder="Password"
         type="password"
         formControlName="password"
         [ngClass]="{
-          'border-1 border-rose-500':
+          'border-1 border-rose-600':
             SignInForm.get('password')?.invalid &&
             SignInForm.get('password')?.touched
         }"

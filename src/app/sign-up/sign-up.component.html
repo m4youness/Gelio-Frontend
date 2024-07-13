@@ -9,7 +9,7 @@
       Create your account
     </h1>
     <input
-      class="rounded-3xl bg-black border-2 border-white p-1 px-4 text-white min-w-full"
+      class="rounded-3xl bg-black border-2 border-gray-300 p-1 px-4 text-white min-w-full"
       placeholder="Firstname"
       [(ngModel)]="person.FirstName"
       formControlName="firstname"
@@ -21,7 +21,7 @@
     />
 
     <input
-      class="rounded-3xl bg-black border-2 border-white p-1 px-4 text-white"
+      class="rounded-3xl bg-black border-2 border-gray-300 p-1 px-4 text-white"
       placeholder="Lastname"
       [(ngModel)]="person.LastName"
       formControlName="lastname"
@@ -32,7 +32,7 @@
       }"
     />
     <input
-      class="rounded-3xl bg-black border-2 border-white p-1 px-4 text-white"
+      class="rounded-3xl bg-black border-2 border-gray-300 p-1 px-4 text-white"
       placeholder="Phonenumber"
       [(ngModel)]="person.PhoneNumber"
       formControlName="phonenumber"
@@ -44,7 +44,7 @@
     />
 
     <input
-      class="rounded-3xl bg-black border-2 border-white p-1 px-4 text-white"
+      class="rounded-3xl bg-black border-2 border-gray-300 p-1 px-4 text-white"
       placeholder="Email"
       [(ngModel)]="person.Email"
       formControlName="email"
@@ -54,7 +54,7 @@
       }"
     />
     <input
-      class="rounded-3xl bg-black border-2 border-white p-1 px-4 text-white"
+      class="rounded-3xl bg-black border-2 border-gray-300 p-1 px-4 text-white"
       placeholder="yyyy/mm/dd"
       [(ngModel)]="person.DateOfBirth"
       formControlName="dateofbirth"
@@ -65,7 +65,7 @@
       }"
     />
     <input
-      class="rounded-3xl bg-black border-2 border-white p-1 px-4 text-white"
+      class="rounded-3xl bg-black border-2 border-gray-300 p-1 px-4 text-white"
       placeholder="Username"
       [(ngModel)]="user.Username"
       formControlName="username"
@@ -76,7 +76,7 @@
       }"
     />
     <input
-      class="rounded-3xl bg-black border-2 border-white p-1 px-4 text-white"
+      class="rounded-3xl bg-black border-2 border-gray-300 p-1 px-4 text-white"
       placeholder="Password"
       type="password"
       [(ngModel)]="user.Password"
@@ -89,9 +89,14 @@
     />
     <div class="relative">
       <select
-        class="rounded-3xl p-1 px-4 border-2 border-white bg-black text-gray-400 appearance-none w-72"
+        class="rounded-3xl p-1 px-4 border-2 border-gray-300 bg-black text-gray-400 appearance-none w-72"
         formControlName="CountryName"
         id="Countries"
+        [ngClass]="{
+          'border-1 border-rose-600':
+            SignUpForm.get('CountryName')?.invalid &&
+            SignUpForm.get('CountryName')?.touched
+        }"
       >
         <option value="" disabled selected>Select a country</option>
         <option *ngFor="let Country of Countries" [value]="Country.CountryName">
