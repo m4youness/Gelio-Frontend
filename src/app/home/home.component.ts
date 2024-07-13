@@ -249,13 +249,20 @@ export class HomeComponent implements OnInit {
   ngOnInit() {
     this.GetPosts();
 
-    this.observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          this.GetPosts();
-        }
-      });
-    });
+    this.observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            this.GetPosts();
+          }
+        });
+      },
+      {
+        root: null, // viewport
+        rootMargin: '0px',
+        threshold: 0.1, // Adjust this value as needed
+      },
+    );
   }
 
   ngAfterViewInit() {

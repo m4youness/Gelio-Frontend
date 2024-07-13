@@ -36,8 +36,6 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
 
   socket?: WebSocket | null;
 
-  FirstMessage: boolean = true;
-
   ContactsLoading: boolean = false;
 
   MessageModeOn: boolean = false;
@@ -191,17 +189,6 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
         SenderId: this.CurrentUserId,
         ReceiverId: this.CurrentReceiverId,
       });
-
-      if (this.FirstMessage) {
-        this.Messages = await firstValueFrom(
-          this.message_service.LoadMessages(
-            this.CurrentUserId,
-            this.CurrentReceiverId,
-          ),
-        );
-
-        this.FirstMessage = false;
-      }
     } catch (err) {
       console.log(err);
     }
