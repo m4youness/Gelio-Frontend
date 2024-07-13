@@ -192,7 +192,7 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
         ReceiverId: this.CurrentReceiverId,
       });
 
-      if (FirstMessage) {
+      if (this.FirstMessage) {
         this.Messages = await firstValueFrom(
           this.message_service.LoadMessages(
             this.CurrentUserId,
