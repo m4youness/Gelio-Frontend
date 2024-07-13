@@ -69,12 +69,16 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
 
     // Listen for messages
     Socket.addEventListener('message', (event) => {
-      this.Messages.push({
-        SenderId: this.CurrentReceiverId,
-        ReceiverId: this.CurrentUserId,
-        MessageBody: event.data,
-        SentDate: this.date_util_service.getCurrentDateTimeString(),
-      });
+      if (this.Messages) {
+        this.Messages.push({
+          SenderId: this.CurrentReceiverId,
+          ReceiverId: this.CurrentUserId,
+          MessageBody: event.data,
+          SentDate: this.date_util_service.getCurrentDateTimeString(),
+        });
+      } else {
+        console.error('Messages array is not initialized');
+      }
     });
 
     this.socket = Socket;
@@ -161,6 +165,10 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
     try {
       if (!this.CurrentUserId || !this.CurrentReceiverId) return;
       const msg = this.MessageForm.controls['Message'].value;
+
+      if (!msg) {
+        return;
+      }
 
       firstValueFrom(
         this.message_service.SendMessage(
