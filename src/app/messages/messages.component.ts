@@ -37,6 +37,7 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
   socket?: WebSocket | null;
 
   ContactsLoading: boolean = false;
+  NoContacts: boolean = false;
 
   MessageModeOn: boolean = false;
   ContactMode: boolean = false;
@@ -227,6 +228,13 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
       const Users: User[] = await firstValueFrom(
         this.message_service.LoadContacts(user_id),
       );
+
+      if (!Users || Users.length === 0) {
+        this.NoContacts = true;
+        return;
+      } else {
+        this.NoContacts = false;
+      }
 
       const userDetailsPromises = Users.map(async (user) => {
         if (!user.ProfileImageId) {

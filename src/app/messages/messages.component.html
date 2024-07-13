@@ -25,7 +25,7 @@
       <p class="mt-1">{{ user.User.Username || "loading..." }}</p>
     </div>
     <div
-      *ngIf="ContactsLoading"
+      *ngIf="ContactsLoading && !NoContacts"
       class="w-full h-4/5 flex justify-center items-center"
     >
       <div class="spinner p-5"></div>
