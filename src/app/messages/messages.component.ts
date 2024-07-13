@@ -175,7 +175,7 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
 
       this.MessageForm.controls['Message'].setValue('');
 
-      await firstValueFrom(
+      firstValueFrom(
         this.message_service.SendMessage(
           this.CurrentUserId,
           this.CurrentReceiverId,
