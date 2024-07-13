@@ -69,6 +69,9 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
 
     // Listen for messages
     Socket.addEventListener('message', (event) => {
+      if (!Array.isArray(this.Messages)) {
+        this.Messages = [];
+      }
       if (this.Messages) {
         this.Messages.push({
           SenderId: this.CurrentReceiverId,
