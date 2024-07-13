@@ -36,7 +36,7 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
 
   socket?: WebSocket | null;
 
-  ContactsLoading : boolean = false;
+  ContactsLoading: boolean = false;
 
   MessageModeOn: boolean = false;
   ContactMode: boolean = false;
@@ -161,8 +161,7 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
     try {
       if (!this.CurrentUserId || !this.CurrentReceiverId) return;
       const msg = this.MessageForm.controls['Message'].value;
-
-      const Sent = await firstValueFrom(
+      await firstValueFrom(
         this.message_service.SendMessage(
           this.CurrentUserId,
           this.CurrentReceiverId,
@@ -170,14 +169,14 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
           this.date_util_service.getCurrentDateTimeString(),
         ),
       );
-      if (!Sent) {
-        alert('err');
-        return;
-      }
-
       this.socket?.send(msg);
+      this.Messages.push({
+        MessageBody: msg,
+        SenderId: this.CurrentUserId,
+        ReceiverId: this.CurrentReceiverId,
+      });
+
       this.MessageForm.controls['Message'].setValue('');
-      this.LoadMessage(this.CurrentReceiverId, true);
     } catch (err) {
       console.log(err);
     }
@@ -209,7 +208,7 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
   async LoadContacts() {
     this.Users = [];
     try {
-      this.ContactsLoading = true
+      this.ContactsLoading = true;
       const user_id = await firstValueFrom(this.user_service.CurrentUserId());
       this.CurrentUserId = user_id;
 
