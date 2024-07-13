@@ -173,7 +173,9 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
         return;
       }
 
-      firstValueFrom(
+      this.MessageForm.controls['Message'].setValue('');
+
+      await firstValueFrom(
         this.message_service.SendMessage(
           this.CurrentUserId,
           this.CurrentReceiverId,
@@ -187,8 +189,6 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
         SenderId: this.CurrentUserId,
         ReceiverId: this.CurrentReceiverId,
       });
-
-      this.MessageForm.controls['Message'].setValue('');
     } catch (err) {
       console.log(err);
     }
