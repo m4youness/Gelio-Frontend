@@ -170,26 +170,28 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
       if (!this.CurrentUserId || !this.CurrentReceiverId) return;
       const msg = this.MessageForm.controls['Message'].value;
 
-      if (!msg) {
-        return;
+      if (!Array.isArray(this.Messages)) {
+        this.Messages = [];
       }
 
-      this.MessageForm.controls['Message'].setValue('');
+      if (this.Messages) {
+        this.MessageForm.controls['Message'].setValue('');
 
-      firstValueFrom(
-        this.message_service.SendMessage(
-          this.CurrentUserId,
-          this.CurrentReceiverId,
-          msg,
-          this.date_util_service.getCurrentDateTimeString(),
-        ),
-      );
-      this.socket?.send(msg);
-      this.Messages.push({
-        MessageBody: msg,
-        SenderId: this.CurrentUserId,
-        ReceiverId: this.CurrentReceiverId,
-      });
+        firstValueFrom(
+          this.message_service.SendMessage(
+            this.CurrentUserId,
+            this.CurrentReceiverId,
+            msg,
+            this.date_util_service.getCurrentDateTimeString(),
+          ),
+        );
+        this.socket?.send(msg);
+        this.Messages.push({
+          MessageBody: msg,
+          SenderId: this.CurrentUserId,
+          ReceiverId: this.CurrentReceiverId,
+        });
+      }
     } catch (err) {
       console.log(err);
     }
