@@ -1,7 +1,9 @@
 <app-navbar [PageName]="pageName"></app-navbar>
 
 <app-overlay [showOverlay]="loading"></app-overlay>
-<div class="h-screen bg-black w-full flex justify-center overflow-y-scroll">
+<div
+  class="h-screen bg-black w-full flex justify-center overflow-y-scroll pt-16"
+>
   <form
     class="flex flex-col lg:flex-row mt-12 gap-9"
     [formGroup]="UploadGroup"
