@@ -1,7 +1,10 @@
 <app-navbar [PageName]="pageName" />
 
 <app-overlay2 [showOverlay]="loading && Offset == 0"></app-overlay2>
-<div class="h-screen flex flex-col overflow-y-scroll bg-black" *ngIf="!NoPosts">
+<div
+  class="h-screen flex flex-col overflow-y-scroll bg-black mt-12"
+  *ngIf="!NoPosts"
+>
   <div
     *ngFor="let post of Posts; let i = index"
     class="text-white flex w-full justify-center px-4 mt-12"
