@@ -44,29 +44,28 @@ export class SignInComponent implements OnInit {
       return;
     }
     try {
-      //const IsActive: Boolean = await firstValueFrom(
-      // this.user_service.IsNotActive(this.username),
-      //);
+      if (!this.username) {
+        return;
+      }
+      const IsActive: Boolean = await firstValueFrom(
+        this.user_service.IsNotActive(this.username),
+      );
 
-      //if (!IsActive) {
-      //  alert('This user is not active');
-      //  return;
-      //}
+      if (!IsActive) {
+        alert('This user is not active');
+        return;
+      }
 
-      const LoggedIn: boolean = await firstValueFrom(
+      await firstValueFrom(
         this.user_service.Login({
           UserName: this.username,
           Password: this.password,
         }),
       );
-
-      if (LoggedIn) {
-        this.router.navigate(['/home']);
-      } else {
-        this.SignInForm.markAllAsTouched();
-      }
+      this.router.navigate(['/home']);
     } catch (err) {
       console.log(err);
+      this.SignInForm.markAllAsTouched();
     }
   }
 }

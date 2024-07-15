@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiUrl } from '../enviroment/ApiUrl';
 import { User } from '../models/user';
+import { Person } from '../models/people';
 
 class LoginClass {
   UserName?: string | null;
@@ -23,7 +24,7 @@ export class UserService {
   }
 
   MakeUserInActive(UserId: number): Observable<Boolean> {
-    return this.http.get<Boolean>(this.ApiUrl + `User/InActive/${UserId}`, {
+    return this.http.get<Boolean>(this.ApiUrl + `User/Deactivate/${UserId}`, {
       withCredentials: true,
     });
   }
@@ -58,5 +59,24 @@ export class UserService {
 
   IsNotActive(username: string): Observable<Boolean> {
     return this.http.get<Boolean>(this.ApiUrl + `User/IsNotActive/${username}`);
+  }
+
+  UpdateUser(user: User, person: Person): Observable<string> {
+    return this.http.put<string>(
+      this.ApiUrl + 'User/Update',
+      {
+        Firstname: person.FirstName,
+        Lastname: person.LastName,
+        Email: person.Email,
+        Phonenumber: person.PhoneNumber,
+        Username: user.Username,
+        CountryId: person.CountryID,
+        GenderId: person.GenderID,
+        ProfileImageId: user.ProfileImageId,
+        PersonId: person.PersonID,
+        UserId: user.UserId,
+      },
+      { withCredentials: true },
+    );
   }
 }

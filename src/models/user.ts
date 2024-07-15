@@ -6,6 +6,16 @@ export class User {
   IsActive?: boolean | null;
   ProfileImageId?: number | null;
   PersonID?: number | null;
+
+  constructor(
+    UserId?: number | null,
+    Username?: string | null,
+    ProfileImageId?: number | null,
+  ) {
+    this.UserId = UserId || null;
+    this.Username = Username || null;
+    this.ProfileImageId = ProfileImageId || null;
+  }
 }
 
 export class UserWithProfileImage {
