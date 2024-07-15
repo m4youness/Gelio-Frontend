@@ -103,14 +103,6 @@
       <h2 class="text-2xl font-bold mb-1 border-b borde-b-zinc-900">
         Edit Profile
       </h2>
-
-      <div
-        class="flex justify-center h-full w-full items-center"
-        *ngIf="EditProfileLoading"
-      >
-        <div class="spinner p-6 my-16"></div>
-      </div>
-
       <form class="flex flex-col gap-6" [formGroup]="profileForm">
         <input
           placeholder="firstname"
@@ -215,7 +207,7 @@
           <div class="flex flex-col">
             <p class="font-semibold">Country</p>
             <select
-              class="py-1 focus:outline-none border-b border-b-gray-600 appearance-none bg-zinc-900 w-72 text-white"
+              class="py-1 focus:outline-none border-b border-b-gray-600 appearance-none bg-zinc-900 w-full text-white"
               formControlName="country"
               id="Countries"
             >
@@ -241,7 +233,7 @@
           class="px-4 py-2 bg-blue-700 text-white rounded hover:bg-blue-600 w-3/4"
           (click)="UpdateUser()"
         >
-          Upate
+          Update
         </button>
       </div>
     </div>
