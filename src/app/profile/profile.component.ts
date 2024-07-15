@@ -95,10 +95,13 @@ export class ProfileComponent implements OnInit {
 
   async deactivateAccount() {
     try {
-      const UserId = await firstValueFrom(this.user_service.CurrentUserId());
-      await firstValueFrom(this.user_service.MakeUserInActive(UserId));
-      await firstValueFrom(this.user_service.Logout());
-
+      if (!this.loggedInId) {
+        return;
+      }
+      await Promise.all([
+        firstValueFrom(this.user_service.MakeUserInActive(this.loggedInId)),
+        firstValueFrom(this.user_service.Logout()),
+      ]);
       this.router.navigate(['/']);
     } catch (err) {
       console.log(err);
