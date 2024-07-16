@@ -55,11 +55,12 @@ export class SignInComponent implements OnInit {
           Password: this.password,
         }),
       );
-      this.SigningIn = false;
       this.router.navigate(['/home']);
     } catch (err) {
       console.log(err);
       this.SignInForm.markAllAsTouched();
+    } finally {
+      this.SigningIn = false;
     }
   }
 }
