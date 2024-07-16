@@ -20,6 +20,7 @@ import { MessagesComponent } from './messages/messages.component';
 import { OverlayComponent } from './overlay/overlay.component';
 import { CreatePostComponent } from './create-post/create-post.component';
 import { Overlay2Component } from './overlay2/overlay2.component';
+import { FixedNavbarComponent } from './fixed-navbar/fixed-navbar.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { Overlay2Component } from './overlay2/overlay2.component';
     OverlayComponent,
     CreatePostComponent,
     Overlay2Component,
+    FixedNavbarComponent,
   ],
   imports: [
     BrowserModule,

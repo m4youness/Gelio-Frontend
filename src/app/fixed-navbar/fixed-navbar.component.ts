@@ -7,11 +7,11 @@ import { Image } from '../../models/image';
 import { CloudinaryService } from '../../services/cloudinary.service';
 
 @Component({
-  selector: 'app-navbar',
-  templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.css',
+  selector: 'app-fixed-navbar',
+  templateUrl: './fixed-navbar.component.html',
+  styleUrl: './fixed-navbar.component.css',
 })
-export class NavbarComponent {
+export class FixedNavbarComponent {
   @Input() PageName?: string | null;
 
   constructor(
