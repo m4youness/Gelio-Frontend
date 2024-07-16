@@ -2,7 +2,7 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Post, PostDetails } from '../../models/post';
 import { UserService } from '../../services/user.service';
 import { PostService } from '../../services/post.service';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, Subject } from 'rxjs';
 import { CloudinaryService } from '../../services/cloudinary.service';
 import { DateUtilService } from '../../services/date-util.service';
 import { PostLikesService } from '../../services/post-likes.service';
@@ -10,6 +10,7 @@ import { CommentsService } from '../../services/comments.service';
 import { CommentDetails, Comments } from '../../models/comments';
 import { UserWithProfileImage } from '../../models/user';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { debounceTime, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-home',
@@ -40,6 +41,13 @@ export class HomeComponent implements OnInit {
         Validators.maxLength(500),
       ]),
     });
+
+    this.likeSubject
+      .pipe(
+        debounceTime(100), // Adjust the debounce time as needed
+        switchMap(({ index }) => this.handleLike(index)),
+      )
+      .subscribe();
   }
 
   Posts: PostDetails[] = [];
@@ -129,31 +137,40 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  async Like(i: number) {
+  private likeSubject = new Subject<{ index: number }>();
+
+  async handleLike(i: number) {
     try {
       this.Posts[i].IsLiked = !this.Posts[i].IsLiked;
       const PostId = this.Posts[i].Post.PostId;
 
       if (!PostId || !this.CurrentUserId) return;
 
+      // Optimistic UI update
       if (this.Posts[i].IsLiked) {
-        this.Posts[i].Likes++;
+        this.Posts[i].Likes += 1;
+      } else {
+        this.Posts[i].Likes -= 1;
+      }
+
+      // Proceed with the actual like/unlike operation
+      if (this.Posts[i].IsLiked) {
         await firstValueFrom(
           this.post_likes_service.AddLike(PostId, this.CurrentUserId),
         );
       } else {
-        this.Posts[i].Likes--;
         await firstValueFrom(
           this.post_likes_service.RemoveLike(PostId, this.CurrentUserId),
         );
       }
-
-      this.Posts[i].Likes = await firstValueFrom(
-        this.post_likes_service.GetAmountOfLikes(PostId),
-      );
     } catch (err) {
       console.log(err);
     }
+  }
+
+  // Function to be called on like button click
+  Like(i: number) {
+    this.likeSubject.next({ index: i });
   }
 
   async GetPosts() {

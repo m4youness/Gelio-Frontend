@@ -23,7 +23,7 @@ export class NavbarComponent implements OnInit {
   rotationAngle: number = 0;
   CurrentUser: User = {};
   ProfilePicture: Image = {};
-
+  loading: boolean = false;
 
   NavigationPopup: boolean = false;
 
@@ -58,7 +58,6 @@ export class NavbarComponent implements OnInit {
         return;
       }
 
-
       if (this.CurrentUser.ProfileImageId == 2) {
         const ProfileUrl =
           'https://res.cloudinary.com/geliobackend/image/upload/v1720033720/profile-icon-design-free-vector.jpg.jpg';
@@ -80,11 +79,10 @@ export class NavbarComponent implements OnInit {
 
   async Logout() {
     try {
-      const LoggedOut: boolean = await firstValueFrom(
-        this.user_service.Logout(),
-      );
-
-      if (LoggedOut) this.router.navigate(['/']);
+      this.loading = true;
+      await firstValueFrom(this.user_service.Logout());
+      this.router.navigate(['/']);
+      this.loading = false;
     } catch (err) {
       console.log(err);
     }

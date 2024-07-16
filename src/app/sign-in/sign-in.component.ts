@@ -25,14 +25,15 @@ export class SignInComponent implements OnInit {
   }
 
   SignInForm: FormGroup;
+  SigningIn: boolean = false;
 
   username?: string | null;
   password?: string | null;
 
   async GetCurrentUser() {
     try {
-      const UserId = await firstValueFrom(this.user_service.CurrentUserId());
-      if (UserId) this.router.navigate(['/home']);
+      await firstValueFrom(this.user_service.CurrentUserId());
+      this.router.navigate(['/home']);
     } catch (err) {
       console.log(err);
     }
@@ -44,24 +45,17 @@ export class SignInComponent implements OnInit {
       return;
     }
     try {
+      this.SigningIn = true;
       if (!this.username) {
         return;
       }
-      const IsActive: Boolean = await firstValueFrom(
-        this.user_service.IsNotActive(this.username),
-      );
-
-      if (!IsActive) {
-        alert('This user is not active');
-        return;
-      }
-
       await firstValueFrom(
         this.user_service.Login({
           UserName: this.username,
           Password: this.password,
         }),
       );
+      this.SigningIn = false;
       this.router.navigate(['/home']);
     } catch (err) {
       console.log(err);

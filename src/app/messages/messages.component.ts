@@ -4,7 +4,8 @@ import { UserService } from '../../services/user.service';
 import { User, UserWithProfileImage } from '../../models/user';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { Message } from '../../models/Message';
 import { CloudinaryService } from '../../services/cloudinary.service';
@@ -54,6 +55,13 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
   CurrentUserId?: number | null;
   CurrentReceiverId?: number | null;
 
+  messagesLoading: boolean = false;
+
+  private loadMessageSubject = new Subject<{
+    receiverId: number | null;
+    isMessaging: boolean;
+  }>();
+
   ngAfterViewChecked(): void {
     this.scrollToBottom();
   }
@@ -94,7 +102,6 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
 
   ContactModeOn() {
     this.ContactMode = !this.ContactMode;
-    this.LoadContacts();
   }
 
   GoToReceiversProfilePage() {
@@ -127,20 +134,16 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
         return;
       }
       if (!this.CurrentUserId) return;
-      const Added = await firstValueFrom(
+      await firstValueFrom(
         this.message_service.AddContact(
           this.ContactForm.controls['Contact'].value,
           this.CurrentUserId,
         ),
       );
 
-      if (Added) {
-        this.ContactForm.controls['Contact'].setValue('');
-        this.ContactModeOn();
-      } else {
-        alert('Could not add contact');
-        return;
-      }
+      this.ContactForm.controls['Contact'].setValue('');
+      this.ContactModeOn();
+      this.LoadContacts();
     } catch (err) {
       console.log(err);
       alert("Couldn't add contact");
@@ -197,27 +200,46 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
     }
   }
 
-  async LoadMessage(ReceiverId?: number | null, IsMessaging: boolean = false) {
-    if (!IsMessaging) this.GetCurrentReceiverName(ReceiverId);
+  async debouncedLoadMessage({
+    receiverId,
+    isMessaging,
+  }: {
+    receiverId: number | null;
+    isMessaging: boolean;
+  }) {
+    if (!isMessaging) this.GetCurrentReceiverName(receiverId);
     if (this.socket) {
       this.socket.close();
       this.socket = null;
     }
 
+    this.messagesLoading = true;
+
     this.ConnectToSockets();
     this.MessageModeOn = true;
 
-    this.CurrentReceiverId = ReceiverId;
+    this.CurrentReceiverId = receiverId;
 
-    if (!this.CurrentUserId || !ReceiverId) return;
+    if (!this.CurrentUserId || !receiverId) return;
     try {
       this.Messages = [];
       this.Messages = await firstValueFrom(
-        this.message_service.LoadMessages(this.CurrentUserId, ReceiverId),
+        this.message_service.LoadMessages(this.CurrentUserId, receiverId),
       );
+      this.messagesLoading = false;
     } catch (err) {
       console.log(err);
     }
+  }
+
+  async LoadMessage(ReceiverId?: number | null, IsMessaging: boolean = false) {
+    if (!ReceiverId) {
+      return;
+    }
+    this.loadMessageSubject.next({
+      receiverId: ReceiverId,
+      isMessaging: IsMessaging,
+    });
   }
 
   async LoadContacts() {
@@ -243,6 +265,7 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
           return null;
         }
         var ProfileUrl = '';
+
         if (user.ProfileImageId == 2) {
           ProfileUrl =
             'https://res.cloudinary.com/geliobackend/image/upload/v1720033720/profile-icon-design-free-vector.jpg.jpg';
@@ -270,5 +293,13 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
 
   ngOnInit(): void {
     this.LoadContacts();
+
+    this.loadMessageSubject
+      .pipe(
+        debounceTime(200), // Adjust the debounce time as needed
+      )
+      .subscribe(({ receiverId, isMessaging }) => {
+        this.debouncedLoadMessage({ receiverId, isMessaging });
+      });
   }
 }
