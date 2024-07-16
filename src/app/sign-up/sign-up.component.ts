@@ -77,6 +77,7 @@ export class SignUpComponent implements OnInit {
     try {
       if (!this.SignUpForm.valid) {
         this.SignUpForm.markAllAsTouched();
+        this.loading = false;
         return;
       }
 
@@ -95,6 +96,7 @@ export class SignUpComponent implements OnInit {
 
       if (UserExists) {
         alert('This user already exists');
+        this.loading = false;
         return;
       }
 
@@ -104,8 +106,6 @@ export class SignUpComponent implements OnInit {
       this.AddUser(PersonId);
     } catch (err) {
       console.log(err);
-    } finally {
-      this.loading = false;
     }
   }
 
@@ -131,6 +131,8 @@ export class SignUpComponent implements OnInit {
       this.router.navigate(['/home']);
     } catch (err) {
       console.log(err);
+    } finally {
+      this.loading = false;
     }
   }
 
