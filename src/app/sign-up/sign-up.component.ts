@@ -80,6 +80,7 @@ export class SignUpComponent implements OnInit {
         return;
       }
 
+      this.loading = true;
       this.person.CountryID = await firstValueFrom(
         this.country_service.GetCountryWithName(
           this.SignUpForm.controls['CountryName'].value,
@@ -103,12 +104,12 @@ export class SignUpComponent implements OnInit {
       this.AddUser(PersonId);
     } catch (err) {
       console.log(err);
+    } finally {
+      this.loading = false;
     }
   }
 
   async AddUser(PersonId?: number | null) {
-    this.loading = true;
-
     if (this.file) {
       const ImageId = await firstValueFrom(
         this.cloudinaryService.uploadImage(this.file),
@@ -118,23 +119,16 @@ export class SignUpComponent implements OnInit {
 
     this.user.PersonID = PersonId;
     try {
-      const UserId = await firstValueFrom(this.user_service.AddUser(this.user));
-      if (!UserId) {
-        alert('An error occurred');
-        return;
-      }
+      await firstValueFrom(this.user_service.AddUser(this.user));
 
-      const LoggedIn = await firstValueFrom(
+      await firstValueFrom(
         this.user_service.Login({
           UserName: this.user.Username,
           Password: this.user.Password,
         }),
       );
 
-      if (LoggedIn) {
-        this.loading = false;
-        this.router.navigate(['/home']);
-      }
+      this.router.navigate(['/home']);
     } catch (err) {
       console.log(err);
     }
