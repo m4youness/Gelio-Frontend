@@ -234,7 +234,7 @@ export class ProfileComponent implements OnInit {
         );
       }
 
-      const user = new User(this.CurrentUser.UserId, username, ProfileImageId);
+      const user = new User(this.loggedInId, username, ProfileImageId);
       const person = new Person(
         this.CurrentPerson.PersonID,
         firstname,
