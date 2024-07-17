@@ -10,7 +10,6 @@ import { CountryService } from '../../services/country.service';
 import { Country } from '../../models/country';
 import { firstValueFrom } from 'rxjs';
 import { CloudinaryService } from '../../services/cloudinary.service';
-
 import { NgxImageCompressService } from 'ngx-image-compress';
 
 @Component({
@@ -67,7 +66,7 @@ export class SignUpComponent implements OnInit {
         this.country_service.GetCountries(),
       );
 
-      if (Countries) this.Countries = Countries;
+      this.Countries = Countries;
     } catch (err) {
       console.log(err);
     }
@@ -77,35 +76,27 @@ export class SignUpComponent implements OnInit {
     try {
       if (!this.SignUpForm.valid) {
         this.SignUpForm.markAllAsTouched();
-        this.loading = false;
         return;
       }
 
       this.loading = true;
+
       this.person.CountryID = await firstValueFrom(
         this.country_service.GetCountryWithName(
           this.SignUpForm.controls['CountryName'].value,
         ),
       );
 
-      const UserExists = await firstValueFrom(
-        this.user_service.DoesUserExist({
-          UserName: this.user.Username,
-        }),
-      );
-
-      if (UserExists) {
-        alert('This user already exists');
-        this.loading = false;
-        return;
-      }
-
       const PersonId = await firstValueFrom(
         this.person_service.AddPerson(this.person),
       );
-      this.AddUser(PersonId);
+
+      await this.AddUser(PersonId);
+      this.router.navigate(['/home']);
     } catch (err) {
       console.log(err);
+    } finally {
+      this.loading = false;
     }
   }
 
@@ -127,12 +118,8 @@ export class SignUpComponent implements OnInit {
           Password: this.user.Password,
         }),
       );
-
-      this.router.navigate(['/home']);
     } catch (err) {
       console.log(err);
-    } finally {
-      this.loading = false;
     }
   }
 
