@@ -95,7 +95,6 @@ export class SignUpComponent implements OnInit {
       this.router.navigate(['/home']);
     } catch (err) {
       console.log(err);
-      this.router.navigate(['/']);
     } finally {
       this.loading = false;
     }
@@ -121,7 +120,6 @@ export class SignUpComponent implements OnInit {
       );
     } catch (err) {
       console.log(err);
-      this.router.navigate(['/']);
     }
   }
 
